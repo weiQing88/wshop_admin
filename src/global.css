@@ -1,0 +1,84 @@
+
+html, body {
+  margin:0;
+  padding:0;
+  height: 100%;
+}
+
+
+#root{
+  position: absolute;
+  top: 0;
+  left: 0;
+   width: 100%;
+   height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+
+#app_content{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(left, #fff, #e4e4e4);
+  border: 1px solid #aaa;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(left, #22ADD4, #1E98BA);
+}
+
+
+
+p,figure,dl,dt,dd,
+h1,h2,h3,h4,h5,h6,ol,li,ul{
+    margin: 0;
+    padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul,ol{
+    list-style: none;
+}
+
+em,i{
+    font-style: normal;
+}
+
+.ell{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+
+.bd{
+   border: 1px solid red;
+}
+
+
+
+@import './styles/index.less';
+@import './components/home/home.less';
