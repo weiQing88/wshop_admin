@@ -6,6 +6,7 @@ function AppLayout( props ){
      let resize = e => {
           setTimeout(() =>{
                let height = document.getElementById('wshop_app_layout').offsetHeight;
+               window.appLayoutHeigght = height;
                setHgt( height )
           },100)
      }

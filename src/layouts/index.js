@@ -1,5 +1,6 @@
 import styles from './index.css';
 import React, { useState } from 'react';
+import Link from 'umi/link';
 import { Layout, Menu, Icon, Breadcrumb  } from 'antd';
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -18,18 +19,21 @@ function BasicLayout(props) {
 
         <div className="logo" />
 
-        <Menu theme="dark" defaultSelectedKeys={['1']}>
+        <Menu  mode="inline" theme="dark" defaultSelectedKeys={['1']}>
           <Menu.Item key="1">
-             <Icon type="home" />
+             <Icon type="home"/>
               <span>首页</span>
             </Menu.Item>
-
-           {/* <SubMenu key="1" title="首页" >
-              <Menu.Item key="1-1">Option 1</Menu.Item>
-              <Menu.Item key="1-2">Option 2</Menu.Item>
+        <SubMenu key="2" title={ <span><Icon type="mail" /> <span>商品管理</span></span>} >
+              <Menu.Item key="2-1">
+                 <span>商品列表</span>
+              </Menu.Item>
+              <Menu.Item key="2-2">
+                 <span>商品分类</span>
+              </Menu.Item>
           </SubMenu>
          
-          <Menu.Item key="4">
+           {/*   <Menu.Item key="4">
             <Icon type="video-camera" />
             <span>nav 2</span>
           </Menu.Item> */}
