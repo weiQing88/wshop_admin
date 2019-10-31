@@ -7,8 +7,8 @@ export default {
       path: '/',
       component: '../layouts/index',
       routes: [
-        { path: '/', component: '../pages/index' },
-        { path: '/goods', component: '../pages/goods' }
+        { path: '/', component: '../pages/index/index' },
+        { path: '/goods', component: '../pages/goods/goods' }
       ]
     }
   ],
@@ -16,10 +16,17 @@ export default {
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     ['umi-plugin-react', {
       antd: true,
-      dva: false,
+      dva: {
+         immer : true
+      },
       dynamicImport: false,
       title: 'wshop_admin',
       dll: false,
+      local : {
+          enable : true,
+          default : 'zh-CN',
+          baseNavigator : true
+      },
       routes: {
         exclude: [
           /components\//,

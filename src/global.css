@@ -83,9 +83,20 @@ button{
 }
 
 
+.table-action-buttons{
+    display: block;   
+}
+
+.table-action-buttons button{
+     display: inline-block;
+     border: none;
+     background-color: transparent;
+     margin: 5px;
+     cursor: pointer;
+}
 
 
-
-@import './styles/index.less';
-@import './components/home/home.less';
 @import './components/toolbar/toolbar.less';
+
+@import './pages/index/index.less';
+@import './pages/goods/goods.less';
