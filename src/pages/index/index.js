@@ -7,7 +7,6 @@ import MembershipStatistics from './components/membership_statistics';
 import Todo from './components/todo';
 import Version from './components/version';
 
-
 const Home =  function({ dispatch, list, loading, total, page }) {
 
   /**
@@ -37,13 +36,15 @@ const Home =  function({ dispatch, list, loading, total, page }) {
 
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.users;
+  const { list, total, page } = state.homepage;
   return {
     list,
     total,
     page,
-    loading: state.loading.models.users,
+    loading: state.loading.models.homepage,
   };
+
+
 }
 
 export default connect(mapStateToProps)(Home);

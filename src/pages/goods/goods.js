@@ -1,9 +1,10 @@
+import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/app_layout';
 import Toolbar from '@/components/toolbar';
 import ToolbarTabs from '@/components/toolbar/tabs';
-
 import GoodsEditForm from './components/edit_form';
+import AdvancedSearch from './components/advancedSearch';
 import { Tabs, Card, Icon, Badge, Table, Divider  } from 'antd';
 
 
@@ -24,25 +25,40 @@ const data = [
  
 
 
+ const Goods = function({ dispatch, goodsEditFormVisible, searchFormVisible, limit, loading, total, page }){
+
+    const onTableChange = pageNumber => {}
+
+    const onTableShowSizeChange = (current,pageSize) => {}
+
+    const  handleGoodsEditFormEvent = () => {}
 
 
-export default function(){
+    const handleAdSearch = ( arg ) => {
 
-    let [ page, setPage ] = useState(1);
-    let [ limit, setLimit ] = useState(10);
-    let [ count, setCount ] = useState(30);
-    let [ goodsEditFormVisible, setGoodsEditFormVisible ] = useState(true);
+          console.log( arg )
 
+          switch( arg.type ){
+              case 'cancel' : dispatch({  type : 'goods/searchmodal', payload : false  });
+              break;
+              case 'ok' : dispatch({  type : 'goods/searchmodal', payload : false  });
+              break;
+          }
 
-    let [ key, setKey ] = useState( 1 );
+      
+    }
 
-    let onTableChange = pageNumber => {}
+    const handleToolbarEvent = ( arg ) => {
+            switch( arg.type ){
+               case 'add' : dispatch({  type : 'goods/toggle', payload : true,  isEdited : false  });
+               break;
+               case 'menuEvent': console.log();
+               break;
+               case 'searchModal' : dispatch({  type : 'goods/searchmodal', payload : true  });
+               break;
+            }
 
-    let onTableShowSizeChange = (current,pageSize) => {}
-
-
-    let  handleGoodsEditFormEvent = () => {
-          
+            console.log( arg )
     }
 
 
@@ -51,8 +67,8 @@ export default function(){
       
       return (
          <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
-               <Toolbar />
-               <ToolbarTabs />
+               <Toolbar onClick={ handleToolbarEvent  } />
+               <ToolbarTabs onClick={ handleToolbarEvent } />
                <Table  
                  bordered 
                  style={{ backgroundColor : '#fff' }}
@@ -63,9 +79,9 @@ export default function(){
                   pageSize: Number(limit),
                   showQuickJumper: true,
                   showSizeChanger: true,
-                  total : Number(count) | 0,
+                  total : Number(total) | 0,
                   showTotal: function(total,pageSize){
-                      return `共${Number(count)}条`
+                      return `共${Number(total)}条`
                   },
                       onChange: onTableChange,
                       onShowSizeChange: onTableShowSizeChange
@@ -157,12 +173,29 @@ export default function(){
                  rowKey="id"
              />
 
-
-           <GoodsEditForm 
-               onChange={ handleGoodsEditFormEvent } 
-               visible={ goodsEditFormVisible }
-               />
+            <AdvancedSearch 
+                visible={ searchFormVisible }  
+                onClick={ handleAdSearch }
+                 />
+           <GoodsEditForm />
 
          </AppLayout>    
       )
 }
+
+
+
+function mapStateToProps(state) {
+  const { goodsEditFormVisible, searchFormVisible, limit, total, page } = state.goods;
+  return {
+        searchFormVisible,
+        goodsEditFormVisible,
+        page,
+        limit,
+        total,
+       loading: state.loading.models.goods,
+  };
+
+}
+
+export default connect(mapStateToProps)(Goods);

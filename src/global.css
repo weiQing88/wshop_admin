@@ -100,3 +100,4 @@ button{
 
 @import './pages/index/index.less';
 @import './pages/goods/goods.less';
+@import './pages/category/category.less';

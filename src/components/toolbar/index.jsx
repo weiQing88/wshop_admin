@@ -4,22 +4,33 @@ const { Option } = Select;
 
 
 const Toolbar = function( props ){
-      const { getFieldDecorator } = props.form
+      const { form } = props;
+      const { getFieldDecorator } = form
       const formItemStyle = { width : 200 };
 
       useEffect(() =>{}, []);
 
-      let handleMenuClick = e => {}
+      const handleMenuEvent = e => {
+             props.onClick({ type : 'menuEvent', data : e })
+      }
+
+      const handleButtonsEvent =  ( type ) => {
+           let bool = props.onClick({ type, visible : true  }); // true ==> 清空选项框
+           if( bool ){}
+
+      }
+
+
 
       const menu = (
-        <Menu onClick={handleMenuClick}>
+        <Menu onClick={ handleMenuEvent }>
           <Menu.Item key="1">修改价格</Menu.Item>
           <Menu.Item key="2">调整库存</Menu.Item>
           <Menu.Item key="3">批量上架</Menu.Item>
-          <Menu.Item key="1">批量下架</Menu.Item>
-          <Menu.Item key="2">删除</Menu.Item>
-          <Menu.Item key="3">打标签</Menu.Item>
-          <Menu.Item key="1">去标签</Menu.Item>
+          <Menu.Item key="4">批量下架</Menu.Item>
+          <Menu.Item key="5">删除</Menu.Item>
+          <Menu.Item key="6">打标签</Menu.Item>
+          <Menu.Item key="7">去标签</Menu.Item>
         </Menu>
       );
 
@@ -43,22 +54,22 @@ const Toolbar = function( props ){
                         </Form.Item>
 
                         <Form.Item>
-                        <Button type="primary"> 搜索</Button>
+                         <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
                         </Form.Item>
 
 
                         <Form.Item>
-                        <Button type="primary"> 高级搜索</Button>
+                        <Button onClick={ handleButtonsEvent.bind(this, 'searchModal') } type="primary"> 高级搜索</Button>
                         </Form.Item>
 
                         <Form.Item >
                             <Dropdown overlay={menu}>
-                             <Button type="primary">批量操作 </Button>
+                             <Button onClick={ handleButtonsEvent.bind(this, 'bullk') } type="primary">批量操作 </Button>
                             </Dropdown>
                         </Form.Item>
 
                         <Form.Item>
-                        <Button type="primary"> 添加商品</Button>
+                        <Button onClick={ handleButtonsEvent.bind(this, 'add') } type="primary"> 添加商品</Button>
                         </Form.Item>
 
 

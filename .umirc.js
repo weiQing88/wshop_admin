@@ -8,7 +8,8 @@ export default {
       component: '../layouts/index',
       routes: [
         { path: '/', component: '../pages/index/index' },
-        { path: '/goods', component: '../pages/goods/goods' }
+        { path: '/goods', component: '../pages/goods/goods' },
+        { path: '/category', component: '../pages/category/category' }
       ]
     }
   ],
