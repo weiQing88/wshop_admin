@@ -95,9 +95,13 @@ button{
      cursor: pointer;
 }
 
+.expanded-row{
+   margin: 0;
+   padding: 0;
+
+  }
 
 @import './components/toolbar/toolbar.less';
 
 @import './pages/index/index.less';
 @import './pages/goods/goods.less';
-@import './pages/category/category.less';

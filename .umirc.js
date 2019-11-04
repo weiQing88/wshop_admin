@@ -9,7 +9,8 @@ export default {
       routes: [
         { path: '/', component: '../pages/index/index' },
         { path: '/goods', component: '../pages/goods/goods' },
-        { path: '/category', component: '../pages/category/category' }
+        { path: '/goods/category', component: '../pages/goods/category' },
+        { path: '/goods/attrs', component: '../pages/goods/attribution' },
       ]
     }
   ],

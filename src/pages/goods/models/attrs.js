@@ -1,7 +1,7 @@
 import categoryServices from '../services/index'
 
 export default {
-    namespace : 'category',
+    namespace : 'attrs',
     state : {
         visible : false,
         isEdited : false,

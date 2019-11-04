@@ -17,29 +17,64 @@ function BasicLayout(props) {
     <Layout style={{ height : '100%' }} >
       <Sider trigger={null} collapsible collapsed={ collapsed }>
 
-        <div className="logo" />
+       <div className="logo"> logo </div>
 
         <Menu  mode="inline" theme="dark" defaultSelectedKeys={['1']}>
           <Menu.Item key="1">
              <Icon type="home"/>
               <span>首页</span>
             </Menu.Item>
-        <SubMenu key="2" title={ <span><Icon type="mail" /> <span>商品管理</span></span>} >
+
+           <SubMenu key="2" title={ <span><Icon type="mail" /> <span>商品管理</span></span>} >
               <Menu.Item key="2-1">
                  <span>商品列表</span>
               </Menu.Item>
               <Menu.Item key="2-2">
                  <span>商品分类</span>
               </Menu.Item>
-          </SubMenu>
-         
-           {/*   <Menu.Item key="4">
-            <Icon type="video-camera" />
-            <span>nav 2</span>
-          </Menu.Item> */}
+              <Menu.Item key="2-3">
+                 <span>商品属性</span>
+              </Menu.Item>
+            </SubMenu>
+
+           <SubMenu key="3" title={ <span><Icon type="mail" /> <span>订单管理</span></span>} >
+              <Menu.Item key="3-1">
+                 <span>订单列表</span>
+              </Menu.Item>
+               <Menu.Item key="3-2">
+                 <span>发货列表</span>
+              </Menu.Item>
+              <Menu.Item key="3-3">
+                 <span>退货列表</span>
+              </Menu.Item>
+            </SubMenu>
+
+            <SubMenu key="4" title={ <span><Icon type="mail" /> <span>微信管理</span></span>} >
+              <Menu.Item key="4-1">
+                 <span>小程序配置</span>
+              </Menu.Item>
+            </SubMenu>
+
+            <SubMenu key="5" title={ <span><Icon type="mail" /> <span>权限管理</span></span>} >
+              <Menu.Item key="5-1">
+                 <span>用户列表</span>
+              </Menu.Item>
+              <Menu.Item key="5-2">
+                 <span>管理员管理</span>
+              </Menu.Item>
+              <Menu.Item key="5-3">
+                 <span>角色管理</span>
+              </Menu.Item>
+            </SubMenu>
+
+            <SubMenu key="6" title={ <span><Icon type="mail" /> <span>操作日记</span></span>} >
+              <Menu.Item key="6-1">
+                 <span>管理员日记</span>
+              </Menu.Item>
+            </SubMenu>
+
 
         </Menu>
-
       </Sider>
 
       <Layout>
