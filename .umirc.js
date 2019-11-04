@@ -33,6 +33,12 @@ export default {
         ],
       },
     }],
-  ]
+  ],
+
+  theme: {
+    'primary-color': '#eb3232',
+  },
+
+
 
 }
