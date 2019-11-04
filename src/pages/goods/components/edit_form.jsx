@@ -1,30 +1,33 @@
+import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
 import { Drawer, Form, Button, Col, Row, Input, Select, Switch, DatePicker, Icon } from 'antd';
 const { TextArea } = Input;
 const { Option } = Select;
 
- let EditForm = function( props ){
-    let [ visible, setVisible ] =  useState(  props.visible || false );
-
-    let { getFieldDecorator } = props.form;
 
 
-    let onClose = () => {}
+ let EditForm = function({ dispatch, form, isEdited,  goodsEditFormVisible, loading  }){
 
+    let { getFieldDecorator } = form;
 
-    useEffect(() =>{  }, [ props.visible ]);
+    let onClose = () => {
+            dispatch({  type : 'goods/toggle', payload : false })  
+       }
 
+       console.log( 'redner-------' )
+
+    useEffect(() =>{  }, [ ]);
 
      return (
         <Drawer
-        title="Create a new account"
+        title={ isEdited ? "编辑商品" : "添加商品" }
         width={ 720 }
         onClose={ onClose }
-        visible={ props.visible }
+        visible={ goodsEditFormVisible }
       >
         <Form layout="vertical" >
             <Form.Item label="商品类型">
-                  {getFieldDecorator('name', {
+                  {getFieldDecorator('type', {
                     rules: [{ required: true, message: '请选择商品类型' }],
                   })( <Select placeholder="商品类型">
                      <Option value="1"> 类型1 </Option>
@@ -39,14 +42,14 @@ const { Option } = Select;
              </Form.Item>
 
              <Form.Item label="商品编号">
-                  {getFieldDecorator('name', {
+                  {getFieldDecorator('number', {
                     rules: [{ required: true, message: '商品编号' }],
                   })( <Input placeholder="Please enter user name" />)}
              </Form.Item>
 
 
              <Form.Item label="商品品牌">
-                  {getFieldDecorator('name', {
+                  {getFieldDecorator('brand', {
                     rules: [{ required: true, message: 'Please enter user name' }],
                   })( <Select placeholder="商品品牌">
                     <Option value="xiao">Xiaoxiao Fu</Option>
@@ -56,19 +59,22 @@ const { Option } = Select;
 
              <Form.Item label="上架">
                   {getFieldDecorator('is_on_sale', {
-                    rules: [{ required: true, message: 'Please enter user name' }],
+                     valuePropName: 'checked',
+                     rules: [{ required: true, message: 'Please enter user name' }],
                   })(  <Switch checkedChildren="开" unCheckedChildren="关"  /> )}
              </Form.Item>
 
 
              <Form.Item label="推荐">
                   {getFieldDecorator('is_recommend', {
+                     valuePropName: 'checked',
                     rules: [{ required: true, message: 'Please enter user name' }],
                   })(  <Switch checkedChildren="开" unCheckedChildren="关"  /> )}
              </Form.Item>
 
              <Form.Item label="热门">
                   {getFieldDecorator('is_hot', {
+                    valuePropName: 'checked',
                     rules: [{ required: true, message: 'Please enter user name' }],
                   })(  <Switch checkedChildren="开" unCheckedChildren="关"  /> )}
              </Form.Item>
@@ -102,4 +108,18 @@ const { Option } = Select;
 
 
 
-export default Form.create()(EditForm);
+function mapStateToProps(state) {
+  const { goodsEditFormVisible,isEdited } = state.goods;
+  return {
+         isEdited,
+        goodsEditFormVisible,
+        loading: state.loading.models.goods,
+  };
+
+}
+
+
+const EDITFORM = Form.create()(EditForm);
+
+
+export default connect(mapStateToProps)(EDITFORM);
