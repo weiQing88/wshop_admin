@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 function AppLayout( props ){
      let [ hgt, setHgt ] = useState( '100%' );
      let resize = e => {
+          // 确保最早插入事件回调队列
           setTimeout(() =>{
                let height = document.getElementById('wshop_app_layout').offsetHeight;
+               let width = document.getElementById('wshop_app_layout').offsetWidth;
                window.appLayoutHeigght = height;
+               window.appLayoutWidth = width;
                setHgt( height )
-          },100)
+          })
      }
 
      useEffect(() => {  

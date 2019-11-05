@@ -1,0 +1,176 @@
+import { useEffect, useState } from 'react';
+import { Layout, Menu, Icon  } from 'antd';
+import pathToRegexp from 'path-to-regexp';
+import { getMenuData } from '@/util/menu';
+import Link from 'umi/link';
+import util from '@/util';
+const { Sider } = Layout;
+const { SubMenu } = Menu;
+
+export default ( props ) => {
+
+       let { location, collapsed } = props;
+
+       let menuData = getMenuData();
+
+
+       let getDefaultOpenKeys = () => {
+         let path = location.pathname;
+          if( path == '/' ){
+                return ['/']
+          }else{
+               return [  '/' + path.split('/')[1] ]
+          }
+     }
+
+      let [ openKeys, setOpenKeys ] = useState( getDefaultOpenKeys() ); 
+
+   
+
+    // 转化路径
+   let conversionPath = path => {
+      if (path && path.indexOf('http') === 0) {
+      return path;
+      } else {
+      return `/${path || ''}`.replace(/\/+/g, '/');
+      }
+   };
+
+
+         
+  /**
+   * 判断是否是http链接.返回 Link 或 a
+   * Judge whether it is http link.return a or Link
+   */
+  let getMenuItemPath = item => {
+      const itemPath = conversionPath(item.path);
+     // const icon = getIcon(item.icon);
+        const { target, name } = item;
+      // Is it a http link
+      if (/^https?:\/\//.test(itemPath)) {
+      return (
+         <a href={itemPath} target={target}>
+            <Icon type="home"/>
+            <span>{name}</span>
+         </a>
+      );
+      }
+      return (
+      <Link
+         to={ itemPath }
+        // target={ target }
+         replace={ itemPath === props.location.pathname }
+         onClick={ () => {} } >
+          <Icon type="home"/>
+          <span>{ name }</span>
+      </Link>
+      );
+   };
+
+
+         /**
+            * 获得菜单子节点
+          */
+      let  getNavMenuItems = menusData => {
+            if (!menusData) return '';
+             return menusData
+            .filter(item => item.name && !item.hideInMenu)
+            .map(item => {
+                  // make dom
+               // const ItemDom = this.getSubMenuOrItem(item);
+               //  return this.checkPermissionItem(item.authority, ItemDom);
+                return getSubMenuOrItem(item);
+            })
+            .filter( item => item );
+         };
+
+
+
+      let  getSubMenuOrItem = item => {
+
+         if ( item.children && item.children.some( child => child.name ) ) {
+
+           const childrenItems = getNavMenuItems(item.children);
+
+               // 当无子菜单时就不展示菜单
+               if ( childrenItems && childrenItems.length > 0) {
+                  return (
+                     <SubMenu
+                       title={
+                         item.icon ? (
+                           <span>
+                              <Icon type="mail" /> 
+                              <span>{ item.nam }</span>
+                              </span>
+                        ) : (
+                           item.name
+                        )
+                     }
+                     key={ item.path }
+                     >
+                     { childrenItems  }
+                     </SubMenu>
+                  );
+               }
+               return null;
+         } else {
+           return <Menu.Item key={ item.path }>{ getMenuItemPath(item) }</Menu.Item>;
+         }
+
+
+       };
+
+
+
+   let handleMenuClickEvent = ( { item, key, keyPath, domEvent } ) => {
+                 setOpenKeys( keyPath )
+           }
+
+     let  handleOpenChange = openKeys => {
+            setOpenKeys( openKeys )
+     }
+
+   
+
+      useEffect(() => {}, [])
+
+       return (
+        <Sider trigger={null} collapsible collapsed={ collapsed }>
+
+        <div className="logo"> logo </div>
+ 
+         <Menu  
+             mode="inline" 
+             theme="dark" 
+             onClick={ handleMenuClickEvent }
+             onOpenChange={ handleOpenChange }
+             openKeys={ openKeys } 
+             defaultSelectedKeys={[ location.pathname ]}>
+
+            {
+              getNavMenuItems( menuData )
+            }
+            
+           {/* <Menu.Item key="1">
+              <Icon type="home"/>
+               <span>首页</span>
+             </Menu.Item>
+ 
+            <SubMenu key="2" title={ <span><Icon type="mail" /> <span>商品管理</span></span>} >
+               <Menu.Item key="2-1">
+                  <span>商品列表</span>
+               </Menu.Item>
+               <Menu.Item key="2-2">
+                  <span>商品分类</span>
+               </Menu.Item>
+               <Menu.Item key="2-3">
+                  <span>商品属性</span>
+               </Menu.Item>
+             </SubMenu>
+  */}
+ 
+ 
+         </Menu>
+       </Sider>
+       )
+}

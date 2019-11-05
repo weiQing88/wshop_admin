@@ -101,7 +101,45 @@ button{
 
   }
 
-@import './components/toolbar/toolbar.less';
+
+
+.app-breadcrumbs-wrapper{
+     padding: 6px 0;
+     margin: 0 16px;
+}
+
+
+
+.toolbar-wrapper{
+  width: 100%;
+  background-color: #fff;
+  border-bottom:  1px solid #e8e8e8;
+  z-index: 20;
+  padding: 5px;
+}
+
+
+
+/* start of tabs */
+.toolbar_tabs{
+   width: 100%;
+  /*  border-bottom:  1px solid #e8e8e8; */
+   background-color: #fff;
+}
+.toolbar_tabs li{
+    display: inline-block;
+    width: 130px;
+    height: 45px;
+    line-height: 45px;
+    border-right: 1px solid #e8e8e8;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+/* end of tabs */
+
 
 @import './pages/index/index.less';
 @import './pages/goods/goods.less';
+@import './pages/order/order.less';

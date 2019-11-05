@@ -26,7 +26,12 @@ function checkType(target, hook = undefined) {
   };
 
   var handleObject = function() {
-    if (JSON.stringify(target) == "{}") flag = false;
+     try{
+        if (JSON.stringify(target) == "{}") flag = false;
+     }catch(  error ){
+        console.log(error )
+     }
+  
   };
 
   var handleArray = function() {
@@ -479,6 +484,13 @@ deepCopyArray( arr ){
    return 0
     
 }
+
+
+
+ isUrl(path) {
+    const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
+    return reg.test(path)
+  }
 
 
 }

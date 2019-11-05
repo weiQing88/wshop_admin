@@ -63,7 +63,7 @@ export default function(){
          // 在Card渲染完成后执行
         setTimeout(() => { buildChart() });
         return function(){
-            if( util.isValid( myChart )){
+            if( myChart ){
                 myChart.dispose();
                 myChart = null; 
             }

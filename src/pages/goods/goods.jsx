@@ -1,8 +1,10 @@
 import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/app_layout';
-import Toolbar from '@/components/toolbar';
-import ToolbarTabs from '@/components/toolbar/tabs';
+
+import Toolbar from './components/toolbar';
+import ToolbarTabs from './components/tabs';
+
 import GoodsEditForm from './components/edit_form';
 import AdvancedSearch from './components/advancedSearch';
 import { Tabs, Card, Icon, Badge, Table, Divider  } from 'antd';
@@ -35,9 +37,6 @@ const data = [
 
 
     const handleAdSearch = ( arg ) => {
-
-          console.log( arg )
-
           switch( arg.type ){
               case 'cancel' : dispatch({  type : 'goods/searchmodal', payload : false  });
               break;
@@ -58,7 +57,6 @@ const data = [
                break;
             }
 
-            console.log( arg )
     }
 
 

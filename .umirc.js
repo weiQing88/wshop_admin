@@ -11,6 +11,10 @@ export default {
         { path: '/goods', component: '../pages/goods/goods' },
         { path: '/goods/category', component: '../pages/goods/category' },
         { path: '/goods/attrs', component: '../pages/goods/attribution' },
+
+        { path: '/order', component: '../pages/order/list' },
+
+
       ]
     }
   ],

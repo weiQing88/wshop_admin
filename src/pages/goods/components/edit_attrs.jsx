@@ -9,7 +9,7 @@ const fomrItemStyle = {  width : 256 };
 
 
 const EditAttrs = function( props ){
-      let { visible, form, isEdited } = props,
+      let { visible, form, isEdited, dispatch } = props,
           { getFieldDecorator } = form;
 
         let [ rows, setRows ] = useState([ 
@@ -19,13 +19,47 @@ const EditAttrs = function( props ){
                }
           ]); 
 
-        const handleOk = () => {}
-        const handleCancel = () => {}
+        const handleOk = () => {
+            dispatch({
+                 type : 'attrs/toggle',
+                 payload : {
+                    visible : false,
+                    isEdited : false
+                 }
+            })
+        }
+        const handleCancel = () => {
+                dispatch({
+                    type : 'attrs/toggle',
+                    payload : {
+                    visible : false,
+                    isEdited : false
+                    }
+            })
+        }
 
         const increaseRow = () => {
-                rows.push({ id : uitl.randomKey( 2 ), value : '' })
-                setRows( rows )
+             if( rows.length > 15 ) return;
+          let   _rows = uitl.deepCopyArray( rows );
+                _rows.push({ id : uitl.randomKey( 6 ), value : '' });
+                setRows( _rows )
         }
+
+        const deletRow = ( row ) => {
+            let _rows = uitl.deepCopyArray( rows );
+               for( let i = _rows.length - 1; i > -1; i-- ){
+                      if( _rows[i].id == row.id ){
+                         _rows.splice( i, 1 );
+                      }
+               }
+               setRows( _rows );
+      
+        }
+
+    
+
+
+    useEffect(() =>{}, [ rows ]);
 
        
 
@@ -57,7 +91,7 @@ const EditAttrs = function( props ){
                                 {getFieldDecorator(`value-${ index + 1 }`, {
                                     rules: [{ required: true, message: '分类名称' }],
                                 })( <Input style={ fomrItemStyle } placeholder="请输入分类名称" />)}
-                                   <span className="edit-attrs-plugs-button"> <Icon type="delete" /> </span>
+                                   <span onClick={ deletRow.bind(this, row ) } className="edit-attrs-plugs-button"> <Icon type="delete" /> </span>
                                 </Form.Item>  
                             ))
                         }
