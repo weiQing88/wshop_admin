@@ -9,13 +9,14 @@ const routes = [
         { path: '/order',  breadcrumb: '订单列表'  },
         { path: '/order/deliver',  breadcrumb: '发货单列表'  },
         { path: '/order/cancel',  breadcrumb: '退货单列表'  },
+        { path: '/order/service',  breadcrumb: '售后单列表'  },
 
-        { path: '/wx',  breadcrumb: '微信管理'  },
+        // { path: '/wx',  breadcrumb: '微信管理'  },
         { path: '/wx/setting',  breadcrumb: '小程序配置'  },
 
-        { path: '/admin',  breadcrumb: '用户列表'  },
-        { path: '/admin/administrators',  breadcrumb: '管理员管理'  },
-        { path: '/admin/roles',  breadcrumb: '角色管理'  },
+        { path: '/members',  breadcrumb: '用户列表'  },
+        { path: '/members/admin',  breadcrumb: '管理员管理'  },
+        { path: '/members/roles',  breadcrumb: '角色管理'  },
 
         { path: '/logs',  breadcrumb: '管理员日志'  },
 

@@ -1,4 +1,7 @@
 import util from '@/util';
+
+
+
 const menuData = [
       {
         name : '首页',
@@ -49,6 +52,11 @@ const menuData = [
                 name : '退货单列表',
                 path : 'cancel',
                 authority : 1,
+              },
+              {
+                name : '售后单列表',
+                path : 'service',
+                authority : 1,
               }
         ]
      },
@@ -69,7 +77,7 @@ const menuData = [
      {
       name : '会员管理',
       icon : '',
-      path : 'admin',
+      path : 'members',
       children : [
             {
               name : '用户列表',
@@ -78,7 +86,7 @@ const menuData = [
             },
             {
               name : '管理员管理',
-              path : 'administrators',
+              path : 'admin',
               authority : 1,
             },
             {

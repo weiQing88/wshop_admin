@@ -109,6 +109,19 @@ button{
 }
 
 
+.app-tableCell-image{
+    margin: 0 auto;
+     width: 80px;
+     height: 80px;
+     overflow: hidden;
+}
+
+.app-tableCell-image img{
+     display: block;
+     margin: 0 auto;
+     max-width: 100%;
+}
+
 
 .toolbar-wrapper{
   width: 100%;
@@ -136,10 +149,10 @@ button{
     cursor: pointer;
 }
 
-
 /* end of tabs */
 
 
 @import './pages/index/index.less';
 @import './pages/goods/goods.less';
 @import './pages/order/order.less';
+@import './pages/members/members.less';

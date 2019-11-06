@@ -1,4 +1,4 @@
-import Index from '..';
+import Index from '../index/index.js';
 import renderer from 'react-test-renderer';
 
 
