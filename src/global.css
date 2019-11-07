@@ -77,9 +77,27 @@ button{
     white-space: nowrap;
 }
 
+.clearFloat::after{
+  display: block;
+  content: '';
+  width: 100%;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+
+
 
 .bd{
    border: 1px solid red;
+}
+
+
+
+#wshop_app_layout{
+      margin: 16px;
+      background-color: #fff;
+      min-height: 280px;
 }
 
 
@@ -152,7 +170,113 @@ button{
 /* end of tabs */
 
 
+
+
+/* start of 404  */
+
+#app-notFound-page{
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+}
+
+#app-notFound-page .notfound {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  }
+
+#app-notFound-page .notfound {
+max-width: 520px;
+width: 100%;
+line-height: 1.4;
+text-align: center;
+}
+
+#app-notFound-page .notfound .notfound-404 {
+position: relative;
+height: 240px;
+}
+
+#app-notFound-page .notfound .notfound-404 h1 {
+font-family: 'Montserrat', sans-serif;
+position: absolute;
+left: 50%;
+top: 50%;
+-webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+font-size: 252px;
+font-weight: 900;
+margin: 0px;
+color: #262626;
+text-transform: uppercase;
+letter-spacing: -40px;
+margin-left: -20px;
+}
+
+#app-notFound-page .notfound .notfound-404 h1>span {
+text-shadow: -8px 0px 0px #fff;
+}
+
+#app-notFound-page .notfound .notfound-404 h3 {
+font-family: 'Cabin', sans-serif;
+position: relative;
+font-size: 16px;
+font-weight: 700;
+text-transform: uppercase;
+color: #262626;
+margin: 0px;
+letter-spacing: 3px;
+padding-left: 6px;
+}
+
+#app-notFound-page .notfound h2 {
+font-family: 'Cabin', sans-serif;
+font-size: 20px;
+font-weight: 400;
+text-transform: uppercase;
+color: #000;
+margin-top: 0px;
+margin-bottom: 25px;
+}
+
+
+
+
+@media only screen and (max-width: 767px) {
+  #app-notFound-page .notfound .notfound-404 {
+  height: 200px;
+}
+#app-notFound-page .notfound .notfound-404 h1 {
+  font-size: 200px;
+}
+}
+
+@media only screen and (max-width: 480px) {
+  #app-notFound-page .notfound .notfound-404 {
+  height: 162px;
+}
+#app-notFound-page .notfound .notfound-404 h1 {
+  font-size: 162px;
+  height: 150px;
+  line-height: 162px;
+}
+#app-notFound-page .notfound h2 {
+  font-size: 16px;
+}
+}
+
+
+/* start of 404  */
+
+@import './layouts/index.css';
 @import './pages/index/index.less';
 @import './pages/goods/goods.less';
 @import './pages/order/order.less';
 @import './pages/members/members.less';
+@import './pages/login/login.less';

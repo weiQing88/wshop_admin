@@ -12,7 +12,7 @@ export default function(){
     },[])
       
     return (
-       <Card title="代办事项" bordered={false} style={{ width: '30%', margin: '0 1%', float : 'left' }}>
+       <Card title="代办事项" bordered={false} style={{ width: '33%', margin: '0 1%', float : 'left' }}>
            <ul className="ell">
                <li className="todo-card-item">
                 <Link to="/">

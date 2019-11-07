@@ -3,9 +3,14 @@ import util from './index'
 
 
 export default (function (params) {
+
+    // 默认请求域
+    axios.defaults.baseURL = 'http://localhost:8000/';
+
     // 带上请求头
    axios.defaults.headers.common['Authorization'] = util.getCookie('loginToken');
 
+   
 
     // 请求拦截
    axios.interceptors.request.use(function(config) {

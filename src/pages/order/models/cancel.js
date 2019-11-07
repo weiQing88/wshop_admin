@@ -1,5 +1,6 @@
 import orderServices from '../services'
 
+
 export default {
     namespace : 'cancel',
     state : {
@@ -8,8 +9,9 @@ export default {
         limit : 10,
         total : 0,
         dataStatus : 1,
-        initDataSatatus : 0, 
+        initDataSatatus : 0,
     },
+ 
     reducers : {
          setState( state, { payload } ){
               state[ payload.key ] = payload.value;
@@ -18,10 +20,9 @@ export default {
 
     },
     effects : {
-        *test(){
-            
-        }
+        *test(){}
     },
     subscriptions : {}
 
 }
+

@@ -17,6 +17,7 @@ const routes = [
         { path: '/members',  breadcrumb: '用户列表'  },
         { path: '/members/admin',  breadcrumb: '管理员管理'  },
         { path: '/members/roles',  breadcrumb: '角色管理'  },
+        { path: '/members/setting',  breadcrumb: '个人中心'  },
 
         { path: '/logs',  breadcrumb: '管理员日志'  },
 

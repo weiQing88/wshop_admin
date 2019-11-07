@@ -5,7 +5,7 @@ import Link from 'umi/link';
 
 
 export default props => 
-      <Card title="版本信息" bordered={false} style={{ width: '30%', float : 'right' }}>
+      <Card title="版本信息" bordered={false} style={{ width: '32.5%', float : 'right' }}>
             <table className="home-version-table">
                 <colgroup><col width="100" /><col /></colgroup>
                 <tbody>

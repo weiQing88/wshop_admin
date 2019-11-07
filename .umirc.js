@@ -3,16 +3,22 @@ export default {
   treeShaking: true,
   routes: [
     {
+      path : '/login',
+      component : '../pages/login/login'
+    },
+    {
       path: '/',
       component: '../layouts/index',
       routes: [
         {
           path: '/',
           component: '../pages/index/index',
+          authority: ['admin', 'user'],
         },
         {
           path: '/goods',
           component: '../pages/goods/goods',
+          authority: ['admin', 'user'],
         },
         {
           path: '/goods/category',
@@ -51,6 +57,10 @@ export default {
           component: '../pages/members/roles',
         },
         {
+          path: '/members/setting',
+          component: '../pages/members/setting',
+        },
+        {
           path: '/wx/setting',
           component: '../pages/wx/setting',
         },
@@ -58,6 +68,9 @@ export default {
           path: '/logs',
           component: '../pages/logs/index',
         },
+        {
+          component : '../pages/404'
+        }
       ],
     },
   ],
@@ -86,6 +99,12 @@ export default {
       },
     ],
   ],
+
+  chainWebpack(config, { webpack }) {
+    // 设置 alias
+    config.resolve.alias.set('$p', require('path').resolve(__dirname, 'public') )
+  },
+
   theme: {
     'primary-color': '#eb3232',
   },

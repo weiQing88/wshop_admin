@@ -4,7 +4,7 @@ import Link from 'umi/link';
 
 export default function(){
      return (
-        <Card title="快捷操作" bordered={false} style={{ width: '30%', float : 'left' }}>
+        <Card title="快捷操作" bordered={false} style={{ width: '32.5%', float : 'left' }}>
             <ul className="ell" >
                   <li className="shortcut-card-item">
                     <Link to="/">

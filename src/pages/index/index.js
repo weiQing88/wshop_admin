@@ -21,7 +21,7 @@ const Home =  function({ dispatch, list, loading, total, page }) {
   
   return (
        <AppLayout style={{ backgroundColor : '#f0f2f5' }}>
-           <div className="ell" style={{ borderBottom : '1px solid red', marginBottom : '1%' }}>
+           <div className="ell" style={{ marginBottom : '1%' }}>
                  <Shortcut />
                  <Todo />
                  <Version />

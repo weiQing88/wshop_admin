@@ -8,7 +8,7 @@ import EditPoints from './components/edit_point';
 import EditUser from './components/edit_user';
 
 
-import { Tabs, Card, Icon, Badge, Table, Divider  } from 'antd';
+import { Table  } from 'antd';
 
 const data = [
      {
