@@ -32,7 +32,7 @@ const data = [
 
  
 /** 商品类型 */
- const Category = function({ dispatch, visible, isEdited, limit, loading, total, page }){
+ const Category = function({ dispatch, dataSource, formDataSource, visible, isEdited, limit, loading, total, page }){
 
 
     const onTableCellEvent = ( arg ) => {
@@ -42,6 +42,7 @@ const data = [
                      payload : {
                         visible : true,
                         isEdited : true,
+                        data : arg.data,
                     }
                   })
             }else if( arg.type == 'delet' ){
@@ -49,10 +50,18 @@ const data = [
             }
     }
 
+
+
+
+
+
+
     const onTableChange = pageNumber => {}
 
     const onTableShowSizeChange = (current,pageSize) => {}
 
+
+    
     const showEditForm = () => {
           dispatch({
               type : 'category/toggle',
@@ -62,6 +71,9 @@ const data = [
               }
           })
     }
+
+
+
 
     const handleFormEvent =  () => {}
 
@@ -155,13 +167,13 @@ const data = [
                       },
                   
                   ]} 
-                 dataSource={ data }
+                 dataSource={ dataSource }
                  rowKey="id"
              />
 
            <EditForm
                 visible={ visible }
-                data={ {} }
+                data={ formDataSource }
                 dispatch={ dispatch }
                 isEdited={ isEdited }
             />
@@ -173,13 +185,15 @@ const data = [
 
 
 function mapStateToProps(state) {
- const { visible, isEdited, limit, total, page } = state.category;
+ const { visible, isEdited, limit, total, page, dataSource, formDataSource } = state.category;
   return {
         visible,
         isEdited,
         page,
         limit,
         total,
+        dataSource,
+        formDataSource,
        loading: state.loading.models.goods,
   };
 }

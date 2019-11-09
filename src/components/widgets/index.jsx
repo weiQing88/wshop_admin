@@ -7,5 +7,3 @@ export const Promptbox = props => (
     { props.children }
    </div> 
 )
-
-

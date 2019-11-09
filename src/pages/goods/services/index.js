@@ -1,4 +1,8 @@
 import api from '@/util/api';
-export function fetData(){
-      return api.get('api/index')
+
+
+export default {
+       fetCategory(){
+            return api.get('api/goods/category')
+      }
 }

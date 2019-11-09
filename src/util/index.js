@@ -102,23 +102,24 @@ class Util {
   setQsInfo(object) {
     return qs.stringify(Object.assign(qs.parse(this.searchStr()), object ? object : {}))
   }*/
-
   checkReg(str) {
     let _reg = new RegExp("(?:" + str + "\\=)(\\w+)(?:;)");
     let value = _reg.exec(document.cookie);
     return value ? value[1] : "";
   }
 
-  setCookie(key, val, time = 1) {
+  setCookie(key, val, time = undefined ) {
     /* demo： Util.setCookie("remark","damn it",24) */
     let date = new Date();
     let expiresDays = time;
-    date.setTime(date.getTime() + expiresDays * 24 * 3600 * 1000);
-    document.cookie = key + "=" + val + ";expires=" + date.toGMTString();
-  }
+     if( time ){
+         date.setTime(date.getTime() + expiresDays * 24 * 3600 * 1000);
+         document.cookie = key + "=" + val + ";expires=" + date.toGMTString();
+     }else{
+        // 只存于页面生命周期
+        document.cookie = key + "=" + val;
+     }
 
-  setTemporaryCookie(key, val) { // 只存于页面生命周期
-    document.cookie = key + "=" + val;
   }
 
   getCookie(key) {
@@ -139,9 +140,14 @@ class Util {
 
   deleteCookie(key) {
     let date = new Date();
-    date.setTime(date.getTime() - 10000); //将date设置为过去的时间
-    document.cookie = key + "=v; expires =" + date.toGMTString();
+        date.setTime(date.getTime() - 10000); //将date设置为过去的时间
+        document.cookie = key + "=v; expires =" + date.toGMTString();
   }
+
+  deleteCookies = ( keys ) => {
+     if( keys instanceof Array )  keys.forEach( key => this.deleteCookie( key ) );
+  }
+
 
   typeof(object) {
     return Object.prototype.toString

@@ -4,7 +4,7 @@ export default {
   routes: [
     {
       path : '/login',
-      component : '../pages/login/login'
+      component : '../layouts/login/login'
     },
     {
       path: '/',

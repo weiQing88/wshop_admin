@@ -1,6 +1,6 @@
 import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
-import { Drawer, InputNumber, Modal, Upload, Form, Button, Col, Row, Input, Select, Switch, DatePicker, Icon, message } from 'antd';
+import {  InputNumber, Modal, Upload, Form, Button, Col, Row, Input, Select, Switch, DatePicker, Icon, message } from 'antd';
 
 const { TextArea } = Input;
 
@@ -126,7 +126,8 @@ const EditForm =  function( props ){
             <Form style={{ width : '90%', margin : '0 auto' }} layout="vertical" >
 
                 <Form.Item label="分类名称">
-                        {getFieldDecorator('name', {
+                        {getFieldDecorator('category_name', {
+                            initialValue : data.category_name,
                             rules: [{ required: true, message: '分类名称' }],
                         })( <Input  placeholder="请输入分类名称" />)}
                     </Form.Item>
