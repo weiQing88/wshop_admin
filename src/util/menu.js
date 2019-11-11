@@ -5,12 +5,12 @@ import util from '@/util';
 const menuData = [
       {
         name : '首页',
-        icon : '',
+        icon : 'icon-shouye',
         path : '',
       },
      {
         name : '商品管理',
-        icon : '',
+        icon : 'icon-RectangleCopy',
         path : 'goods',
         children : [
              {
@@ -35,7 +35,7 @@ const menuData = [
 
      {
         name : '订单管理',
-        icon : '',
+        icon : 'icon-dingdanguanli',
         path : 'order',
         children : [
               {
@@ -63,7 +63,7 @@ const menuData = [
 
      {
         name : '微信管理',
-        icon : '',
+        icon : 'icon-navicon-wxgl',
         path : 'wx',
         children : [
               {
@@ -76,7 +76,7 @@ const menuData = [
 
      {
       name : '会员管理',
-      icon : '',
+      icon : 'icon-huiyuanguanli',
       path : 'members',
       children : [
             {
@@ -99,7 +99,7 @@ const menuData = [
 
      {
       name : '操作日志',
-      icon : '',
+      icon : 'icon-caozuorizhi',
       path : 'logs',
       children : [
             {

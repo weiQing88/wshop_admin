@@ -4,8 +4,11 @@ import pathToRegexp from 'path-to-regexp';
 import { getMenuData } from '@/util/menu';
 import Link from 'umi/link';
 import util from '@/util';
+import { IconFont }  from '@/components/widgets';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
+
+const fontStyle = {  fontSize : '18px', fontWeight : 'bolder' };
 
 export default ( props ) => {
 
@@ -45,7 +48,7 @@ export default ( props ) => {
   let getMenuItemPath = item => {
       const itemPath = conversionPath(item.path);
      // const icon = getIcon(item.icon);
-        const { target, name } = item;
+        const { target, name, icon } = item;
       // Is it a http link
       if (/^https?:\/\//.test(itemPath)) {
       return (
@@ -61,7 +64,7 @@ export default ( props ) => {
         // target={ target }
          replace={ itemPath === props.location.pathname }
          onClick={ () => {} } >
-          <Icon type="home"/>
+          <IconFont style={ fontStyle } type={ icon }/>
           <span>{ name }</span>
       </Link>
       );
@@ -99,8 +102,8 @@ export default ( props ) => {
                        title={
                          item.icon ? (
                            <span>
-                              <Icon type="mail" /> 
-                              <span>{ item.nam }</span>
+                              <IconFont style={ fontStyle } type={ item.icon } /> 
+                              <span>{ item.name }</span>
                               </span>
                         ) : (
                            item.name
