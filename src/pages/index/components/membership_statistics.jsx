@@ -2,17 +2,18 @@ import { useEffect, useState } from 'react';
 import { Card } from 'antd';
 import echarts from 'echarts';
 import util from '@/util/index';
-
-
+import echartsThemeJson from './echarts_theme.json';
 
 export default function(){
 
      let myChart = null;
 
      let buildChart = () => {
-         if( !util.isValid( myChart ) ) myChart = echarts.init(document.getElementById('membership_statistical_chart'));  
-
-       
+         if( !util.isValid( myChart ) ){
+            echarts.registerTheme('echarts_theme', echartsThemeJson );
+            myChart = echarts.init(document.getElementById('membership_statistical_chart'), 'echarts_theme');  
+         }
+         
          myChart.setOption({
             title: {
                 text: '最近7天会员统计'

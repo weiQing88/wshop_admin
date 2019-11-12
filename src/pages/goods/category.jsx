@@ -5,32 +5,6 @@ import EditForm from './components/edit_form';
 import util from '@/util';
 import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, } from 'antd';
 
-const data = [
-        {
-          id :1,
-          index : 1,
-          category_name : '酸野',
-          category_type : '酸',
-          category_icon : 'xx',
-          category_sort : 2,
-          is_show : '0',
-          category_attrs : [
-              {
-                id : 1,
-                name : '大份',
-              },
-              {
-                id : 1,
-                name : '小份',
-              }
-          ]
-        } 
-    ];
-
-
-
-
- 
 /** 商品类型 */
  const Category = function({ dispatch, dataSource, formDataSource, visible, isEdited, limit, loading, total, page }){
 
@@ -90,6 +64,8 @@ const data = [
 
   
      useEffect(() =>{}, []);
+
+    // console.log( 'dataSource', dataSource )
       
       return (
          <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
@@ -103,7 +79,9 @@ const data = [
                 //  expandedRowRender={ record => <p className="expanded-row" >{ transform( record.category_attrs ) }</p>}
                  style={{ backgroundColor : '#fff' }}
                 // scroll={{ y : '600px' }}
+                
                  pagination={{
+                  hideOnSinglePage : true,
                   pageSizeOptions: ['10','20', '30', '50'],
                   current: Number(page), 
                   pageSize: Number(limit),

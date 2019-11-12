@@ -11,6 +11,12 @@ export default {
       component: '../layouts/index',
       routes: [
         {
+          path : '/testpage',
+          component: '../pages/testpage',
+          Routes: ['src/pages/authorized'],
+          authority: ['admin', 'user'],
+        },
+        {
           path: '/',
           component: '../pages/index/index',
           authority: ['admin', 'user'],
@@ -69,8 +75,13 @@ export default {
           component: '../pages/logs/index',
         },
         {
+          path: '/403',
+          component : '../pages/403'
+        },
+        {
           component : '../pages/404'
-        }
+        },
+      
       ],
     },
   ],

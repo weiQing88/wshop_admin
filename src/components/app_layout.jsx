@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React,{ useEffect, useState } from 'react';
 
 // 最外层布局元素
 function AppLayout( props ){
@@ -8,7 +8,7 @@ function AppLayout( props ){
           setTimeout(() =>{
                let height = document.getElementById('wshop_app_layout').offsetHeight;
                let width = document.getElementById('wshop_app_layout').offsetWidth;
-               window.appLayoutHeigght = height;
+               window.appLayoutHeight = height;
                window.appLayoutWidth = width;
                setHgt( height )
           })
@@ -29,9 +29,10 @@ function AppLayout( props ){
          _style = others;
      }
 
+
      return (
         <div style={{ height : hgt, overflowY : 'auto', ..._style }} id="app_content">
-            { props.children }
+            { props.children  }
         </div>
      )
 

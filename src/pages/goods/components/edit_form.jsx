@@ -17,7 +17,7 @@ function getBase64(img, callback) {
 
 
 const EditForm =  function( props ){
-     let { form, data, visible, dispatch, isEdited } = props,
+     let { form, data = {}, visible, dispatch, isEdited } = props,
          { getFieldDecorator } = form;
 
 

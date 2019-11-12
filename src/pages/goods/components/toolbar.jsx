@@ -15,12 +15,9 @@ const Toolbar = function( props ){
       }
 
       const handleButtonsEvent =  ( type ) => {
-           let bool = props.onClick({ type, visible : true  }); // true ==> 清空选项框
-           if( bool ){}
-
+           let bool = props.onClick({ type, visible : true, data : form.getFieldsValue()  }); 
+               bool && form.resetFields(); // true ==> 清空选项框
       }
-
-
 
       const menu = (
         <Menu onClick={ handleMenuEvent }>
@@ -54,9 +51,11 @@ const Toolbar = function( props ){
                         </Form.Item>
 
                         <Form.Item>
-                         <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
+                           <Button.Group >
+                             <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
+                             <Button onClick={ handleButtonsEvent.bind(this, 'reset') } type="primary"> 重置 </Button>
+                          </Button.Group>
                         </Form.Item>
-
 
                         <Form.Item>
                         <Button onClick={ handleButtonsEvent.bind(this, 'searchModal') } type="primary"> 高级搜索</Button>

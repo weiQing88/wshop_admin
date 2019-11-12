@@ -17,9 +17,9 @@ export default {
     effects : {
         *login( action, { put, call } ){
              let result =  yield call( loginServices.loginService, action.payload );  
-             let { username, token, avater } = result.data;
+             let { username, token, avater, authority } = result.data;
                  util.setCookie('wshopLoginToken', token );
-                 util.setCookie('userInfo', JSON.stringify( { username, avater } ));
+                 util.setCookie('userInfo', JSON.stringify( { username, avater, authority } ));
                  yield put({ 
                      type : 'setState', 
                       payload : { 

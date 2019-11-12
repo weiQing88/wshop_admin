@@ -49,6 +49,7 @@ export default ( props ) => {
       const itemPath = conversionPath(item.path);
      // const icon = getIcon(item.icon);
         const { target, name, icon } = item;
+
       // Is it a http link
       if (/^https?:\/\//.test(itemPath)) {
       return (
@@ -64,7 +65,7 @@ export default ( props ) => {
         // target={ target }
          replace={ itemPath === props.location.pathname }
          onClick={ () => {} } >
-          <IconFont style={ fontStyle } type={ icon }/>
+         { icon ? <IconFont style={ fontStyle } type={ icon }/> : null }
           <span>{ name }</span>
       </Link>
       );
@@ -95,6 +96,7 @@ export default ( props ) => {
 
            const childrenItems = getNavMenuItems(item.children);
 
+         
                // 当无子菜单时就不展示菜单
                if ( childrenItems && childrenItems.length > 0) {
                   return (

@@ -33,23 +33,24 @@ export default {
     },
     effects : {
         *fetCategory( action, { put, call  } ){
-            let result = yield call( services.fetCategory, action.payload );
-            yield put({ 
-                  type : 'setDataSource',
-                  payload : {
-                    dataSource : result.data,
-                    total : result.data.length,
-                  }
-             });
-              console.log( 'result', result.data )
+            let resp = yield call( services.fetCategory, action.payload );
+                 yield put({ 
+                            type : 'setDataSource',
+                            payload : {
+                            dataSource : resp.data,
+                            total : resp.data.length,
+                            }
+                    });
         }
     },
     subscriptions : {
         setup({ dispatch, history }) {
                 history.listen( location  => {
-                     // location.pathname == ''
-                        dispatch({  type: 'fetCategory'  })
-                        console.log('是否每次都执行')
+                       if( location.pathname == '/goods/category' ){
+                              console.log( '执行' )
+                               dispatch({  type: 'fetCategory'})
+                       }
+
                 })
         }
 
