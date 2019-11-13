@@ -4,8 +4,9 @@ export default {
   routes: [
     {
       path : '/login',
-      component : '../layouts/login/login'
+      component : '../layouts/login/login',
     },
+    
     {
       path: '/',
       component: '../layouts/index',
@@ -111,13 +112,58 @@ export default {
     ],
   ],
 
-  chainWebpack(config, { webpack }) {
-    // 设置 alias
-    config.resolve.alias.set('$p', require('path').resolve(__dirname, 'public') )
+  chainWebpack(config, { webpack } ) {
+     // 设置 alias
+     config.resolve.alias.set('$p', require('path').resolve(__dirname, 'public') );
   },
+
+      proxy:{
+        "/api": {
+          "target": "http://localhost:7001", 
+          logLevel: 'debug',
+          "changeOrigin": true,
+          // "pathRewrite": { "^/api" : "" },
+           "secure": false
+        }
+    },
 
   theme: {
     'primary-color': '#eb3232',
   },
+
+
+
+ // ***** 预留配置例子 *****
+  // alias: {
+  //   api: resolve(__dirname, './src/service/'),
+  //   components: resolve(__dirname, './src/components'),
+  //   models: resolve(__dirname, './src/models'),
+  //   service: resolve(__dirname, './src/service'),
+  //   utils: resolve(__dirname, './src/utils'),
+  // },
+  // extraBabelPresets: ['@lingui/babel-preset-react'],
+  // extraBabelPlugins: [
+  //   [
+  //     'import',
+  //     {
+  //       libraryName: 'lodash',
+  //       libraryDirectory: '',
+  //       camel2DashComponentName: false,
+  //     },
+  //     'lodash',
+  //   ],
+
+
+
+
+
+
+
+
+
+
+
+
 };
+
 

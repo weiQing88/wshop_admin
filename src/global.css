@@ -50,7 +50,7 @@ body {
 
 
 p,figure,dl,dt,dd,
-h1,h2,h3,h4,h5,h6,ol,li,ul{
+h1,h2,h3,h4,h5,h6,ol,li,ul,figure,figcaption{
     margin: 0;
     padding: 0;
 }
@@ -294,8 +294,10 @@ margin-bottom: 25px;
 
 /* start of 404  */
 
+
 @import './layouts/index.css';
 @import './pages/index/index.less';
+@import './components/widgets/widgets.less';
 @import './pages/goods/goods.less';
 @import './pages/order/order.less';
 @import './pages/members/members.less';

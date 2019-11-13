@@ -5,5 +5,8 @@ export default {
      },
      logoutService( param = {} ){
         return api.post('api/logout', param )
+     },
+     captcha( p ){
+         return api.get('api/captcha',{ params : p })
      }
 }

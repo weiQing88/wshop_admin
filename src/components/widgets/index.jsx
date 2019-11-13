@@ -34,3 +34,13 @@ export const ToolbarTabs = props => {
        </ul>
      )
 }
+
+
+
+// 验证码
+export const Captcha = props => {
+   useEffect(() => {}, [ props.svg ])
+   return (
+       <figure onClick={ props.onClick } dangerouslySetInnerHTML={{ __html : props.svg }} id="app-captcha-box"></figure>
+   )
+}
