@@ -1,4 +1,5 @@
 import qs from 'qs';
+import CryptoJS from 'crypto-js';
 
 // 检测传入的参数类型； 【 'undefined','object', 'number', 'string', 'boolean' 、'function' 】
 function checkType(target, hook = undefined) {
@@ -320,6 +321,12 @@ class Util {
   }
 
 
+ checkEmail(email){
+    let pattern = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+    return pattern.test(email);
+ }
+
+
 
   //给数字加三位一逗号间隔的方法
   formatNumber(nStr ){ 
@@ -492,11 +499,28 @@ deepCopyArray( arr ){
 }
 
 
-
  isUrl(path) {
     const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
     return reg.test(path)
   }
+
+
+  secretkey = 'wshop_201911141230034_5459';
+
+
+  // 加/解密
+    secret( string, operation = false ){
+      var res = ''; 
+      if( operation ){
+        res = CryptoJS.AES.decrypt( string , this.secretkey ).toString(CryptoJS.enc.Utf8);
+       // console.log("解密结果："+ res );
+      }else{
+        res = CryptoJS.AES.encrypt( string , this.secretkey ).toString();
+       // console.log("加密结果"+ res );
+      }
+    return res
+  }
+
 
 
 }

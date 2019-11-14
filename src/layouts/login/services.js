@@ -1,12 +1,19 @@
 import api from '@/util/api';
 export default {
-      loginService( param = {} ){
-        return api.post('api/login', param )
+      login( p = {} ){
+        return api.post('api/admin/login', p )
      },
-     logoutService( param = {} ){
-        return api.post('api/logout', param )
+     logoutService( p = {} ){
+        return api.post('api/admin/logout', p )
+     },
+     register( p = {} ){
+      return api.post('api/admin/register', p )
      },
      captcha( p ){
-         return api.get('api/captcha',{ params : p })
-     }
+         return api.get('api/admin/captcha', { params : p })
+     },
+     mcaptcha( p ){
+         return api.get('api/admin/mcaptcha',{ params : p })
+     },
+    
 }

@@ -6,6 +6,10 @@ export default {
       path : '/login',
       component : '../layouts/login/login',
     },
+    {
+      path : '/register',
+      component : '../layouts/login/register',
+    },
     
     {
       path: '/',
@@ -115,9 +119,10 @@ export default {
   chainWebpack(config, { webpack } ) {
      // 设置 alias
      config.resolve.alias.set('$p', require('path').resolve(__dirname, 'public') );
+
   },
 
-      proxy:{
+   proxy:{
         "/api": {
           "target": "http://localhost:7001", 
           logLevel: 'debug',
@@ -130,6 +135,10 @@ export default {
   theme: {
     'primary-color': '#eb3232',
   },
+
+  define : { // 这样配置无效，TMD 
+      'PUBLICKEY' : 'wshop_201911141230034_5459',
+  }
 
 
 

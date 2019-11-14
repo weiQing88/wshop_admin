@@ -18,9 +18,15 @@ export default {
     effects : {
         *login( action, { put, call } ){
 
-             let result =  yield call( loginServices.loginService, action.payload );  
+            let result =  yield call( loginServices.login, action.payload );  
              
-             let { username, token, avater, authority } = result.data;
+          //  let { username, token, avater, authority } = result.data;
+
+
+               console.log( 'result.data', result.data );
+
+
+               return;
 
                 //  util.setCookie('wshopLoginToken', token );
 
@@ -35,7 +41,7 @@ export default {
          },
 
         *logout( action, { put, call }){
-            let result =  yield call( loginServices.logoutService, action.payload ); 
+            let result =  yield call( loginServices.logout, action.payload ); 
               // console.log( 'result---', result )
                if( result.data.status_code == 200 ){
                         util.deleteCookies([ 'wshopLoginToken', 'userInfo' ])
@@ -49,7 +55,14 @@ export default {
                   window.location.reload()
                }
         },
+
+        *register( action, { put, call }){
+              let res = yield call( loginServices.register, action.payload );
+                 console.log( res )
     
+        },
+
+
        *captcha( action, { put, call, select } ){
              let res = yield call( loginServices.captcha, { type : 'login' });
                  yield put({
@@ -60,7 +73,12 @@ export default {
                         }
                     })
               console.log( 'res',  )
+       },
+ 
+       *mCaptcha( action, { put, call, select } ){  // 短信验证码
+            yield call( loginServices.mcaptcha, action.payload )
        }
+
 
     },
     subscriptions : {}

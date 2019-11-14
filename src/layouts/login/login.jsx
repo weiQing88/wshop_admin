@@ -20,14 +20,19 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
        let handleSubmit = () => {
            form.validateFields((err, fieldsValue) => {
              if(err) return;
-                // 1 ==> 记住我
+                //  true ==> 1 记住我
                 fieldsValue.remember =  fieldsValue.remember ? '1' : '0';
+                fieldsValue.password =  util.secret( fieldsValue.password );
+
+                console.log( 'fieldsValue.password ', fieldsValue.password  );
+
                 dispatch({
                     type : 'login/login',
                     payload : fieldsValue
                 })
             })
        }
+
 
        useEffect(() => {
           // 获取验证码
@@ -61,12 +66,14 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
                             <Form.Item  >
                             {getFieldDecorator('captcha', {
                                 rules: [ { required: true, message: '请输入验证码' } ],
-                            })(  <Input style={{ width : 150 }}  size="large"  placeholder="验证码" />  )}
+                            })(  <Input style={{ width : 150 }}  size="large" prefix={<Icon type="lock" />}   placeholder="验证码" />  )}
                               <Captcha svg={ captchaSvg } onClick={ changeCaptcha } />
                             </Form.Item>
 
                             <Form.Item style={{ marginBottom : 0 }} className="clearFloat">
-                               {getFieldDecorator('remember')( <Checkbox >记住我</Checkbox>  )}
+                               {getFieldDecorator('remember',{
+                                    valuePropName: 'checked',
+                               })( <Checkbox >记住我</Checkbox>  )}
                                 <Button style={{ width : 90,  float : 'right' }} onClick={ handleSubmit } type="primary"> 登录 </Button>
                             </Form.Item>
 

@@ -44,3 +44,43 @@ export const Captcha = props => {
        <figure onClick={ props.onClick } dangerouslySetInnerHTML={{ __html : props.svg }} id="app-captcha-box"></figure>
    )
 }
+
+
+
+// 倒计时
+export const Countdown = props => {
+      let [ time, setTime ] = useState( 60 );
+      let timer = null;
+       let activate = () => {
+             setInterval(() => {
+                if( time <= 1 ){
+                    clearInterval( timer );
+                    props.afterStop();
+                }else{
+                  setTime( --time )
+                }
+             }, 1000);
+           }
+      
+      let reset = () => {
+           clearInterval( timer );
+           setTime( 60 );
+      }
+
+      useEffect(() =>{
+            if( props.state == 'start' ){
+                   reset();
+                   activate();
+              }else if(  props.state == 'stop' ){
+                   reset()
+            }
+
+         console.log('仅仅执行一次');
+      }, [activate, props.state, reset])
+      
+      return (
+         <span className="app-countdown-box">
+             <em style={{ visibility : props.state == 'start' ? 'visible' : 'hidden' }}>{ time }秒</em>
+         </span>
+      )
+}
