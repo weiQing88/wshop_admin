@@ -1,43 +1,47 @@
 import  loginServices from '@/layouts/login/services'
 import util from '@/util';
+import { message } from 'antd';
 
 
 export default {
     namespace : 'login',
     state : {
          islogged : false,
-         captchaSvg : ''
+         captchaSvg : '',
+         registerData : {}, 
+         loginData : {},
     },
     reducers : {
          setState( state, { payload } ){
-              state[ payload.key ] = payload.value;
+              if( Array.isArray( payload ) ){
+                payload.forEach( item => {
+                      state[ item.key ] = item.value;
+                })
+              }else{
+                state[ payload.key ] = payload.value;
+              }            
               return state;
          },
-    
+
     },
     effects : {
         *login( action, { put, call } ){
 
-            let result =  yield call( loginServices.login, action.payload );  
+            let res =  yield call( loginServices.login, action.payload );  
              
           //  let { username, token, avater, authority } = result.data;
-
-
-               console.log( 'result.data', result.data );
-
-
-               return;
 
                 //  util.setCookie('wshopLoginToken', token );
 
                 //  util.setCookie('userInfo', JSON.stringify( { username, avater, authority } ));
-                //  yield put({ 
-                //      type : 'setState', 
-                //       payload : { 
-                //           key : 'islogged',
-                //           value : true
-                //       } 
-                //     })
+
+                 yield put({ 
+                     type : 'setState', 
+                      payload : { 
+                          key : 'loginData',
+                          value :  res.data
+                      } 
+                    })
          },
 
         *logout( action, { put, call }){
@@ -58,8 +62,14 @@ export default {
 
         *register( action, { put, call }){
               let res = yield call( loginServices.register, action.payload );
-                 console.log( res )
-    
+                    yield put({
+                           type : 'setState',
+                            payload : {
+                                key : 'registerData',
+                                value : res.data
+                            }
+                      })
+            
         },
 
 

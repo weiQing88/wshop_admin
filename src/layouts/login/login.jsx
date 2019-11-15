@@ -2,12 +2,12 @@ import Redirect from 'umi/redirect';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import { useEffect, useState } from 'react';
-import { Form, Button, Input, Icon, Checkbox  } from 'antd';
+import { Form, Button, Input, Icon, Checkbox, message  } from 'antd';
 import { Captcha } from '@/components/widgets';
 import util from '@/util';
 
 
-const Login =  ({  dispatch, form, captchaSvg }) => {
+const Login =  ({  dispatch, form, captchaSvg, loginData }) => {
       let { getFieldDecorator } = form;
 
        // 更换验证码
@@ -23,21 +23,41 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
                 //  true ==> 1 记住我
                 fieldsValue.remember =  fieldsValue.remember ? '1' : '0';
                 fieldsValue.password =  util.secret( fieldsValue.password );
-
-                console.log( 'fieldsValue.password ', fieldsValue.password  );
-
                 dispatch({
                     type : 'login/login',
                     payload : fieldsValue
                 })
+
             })
        }
 
 
        useEffect(() => {
-          // 获取验证码
-           dispatch({ type : 'login/captcha' })
-       }, [dispatch]);
+
+           // 获取验证码
+           dispatch({ type : 'login/captcha' });
+
+            if( loginData.status_code == 200 ){
+                    message.success('登录成功');
+                    form.resetFields();
+                    // cdCallback();  倒计时依旧保持，不重置。
+                    dispatch({
+                        type : 'login/setState',
+                            payload : {
+                            key : 'loginData',
+                            value : {}
+                        }
+                    })
+            }
+
+         if( loginData.status_code && loginData.status_code != 200 ){
+                message.error( loginData.message );
+         }
+             
+           console.log('login 仅仅执行一次');
+
+
+       }, [dispatch, form, loginData]);
 
   
        if( util.getCookie('wshopLoginToken') ){ // 如果已经登录，跳转首页 
@@ -49,12 +69,12 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
                     <Form className="app-login-form">
                         <Form.Item > <h4> WSHOP 管理系统 </h4> </Form.Item>
                             <Form.Item >
-                            {getFieldDecorator('name', {
+                            {getFieldDecorator('mobile', {
                                 rules: [ 
-                                     { required: true, message: '请输入名称' },
+                                     { required: true, message: '请输入手机号' },
                                     //  { validator : validat_Name }
                                  ],
-                            })(  <Input size="large" prefix={<Icon type="user" />} placeholder="用户名" />  )}
+                            })(  <Input size="large" prefix={<Icon type="mobile" />} placeholder="手机号" />  )}
                             </Form.Item>
         
                             <Form.Item  >
@@ -78,7 +98,10 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
                             </Form.Item>
 
                             <Form.Item className="clearFloat">  
-                                <p style={{ float : 'right' }} >使用<Link to="/">手机登录</Link></p>
+                                <p className="clearFloat" >
+                                    <span style={{ float : 'left' }}>没账号？<Link  to="/register">注册</Link>  </span>
+                                    <span style={{ float : 'right' }}> 使用<Link to="/"> 手机登录</Link> </span>
+                                </p>
                              </Form.Item>
                         </Form>
                     </div>
@@ -89,9 +112,10 @@ const Login =  ({  dispatch, form, captchaSvg }) => {
 
 
 function mapStateToProps(state) {
-    const { islogin, captchaSvg } = state.login;
+    const { islogin, captchaSvg, loginData } = state.login;
     return {
           islogin,
+          loginData,
           captchaSvg,
           loading: state.loading.models.login,
      };
