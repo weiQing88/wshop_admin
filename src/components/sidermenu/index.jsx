@@ -155,26 +155,7 @@ export default ( props ) => {
             {
               getNavMenuItems( menuData )
             }
-            
-           {/* <Menu.Item key="1">
-              <Icon type="home"/>
-               <span>首页</span>
-             </Menu.Item>
- 
-            <SubMenu key="2" title={ <span><Icon type="mail" /> <span>商品管理</span></span>} >
-               <Menu.Item key="2-1">
-                  <span>商品列表</span>
-               </Menu.Item>
-               <Menu.Item key="2-2">
-                  <span>商品分类</span>
-               </Menu.Item>
-               <Menu.Item key="2-3">
-                  <span>商品属性</span>
-               </Menu.Item>
-             </SubMenu>
-  */}
- 
- 
+       
          </Menu>
        </Sider>
        )
