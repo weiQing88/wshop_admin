@@ -7,7 +7,7 @@ import { Captcha, Countdown } from '@/components/widgets';
 import util from '@/util';
 
 
-const Register =  ({  dispatch, form }) => {
+const Register =  ({  dispatch, form, registerData }) => {
       let { getFieldDecorator } = form;
 
       let [ counterState, setCounterState ] = useState('stop');
@@ -21,7 +21,7 @@ const Register =  ({  dispatch, form }) => {
            }else{
               setDisabled( true );
               setCounterState( 'start' );
-              dispatch({ type : 'login/mCaptcha', payload : mobile })
+              dispatch({ type : 'login/mCaptcha', payload : { type :'register', mobile } })
            }
           
       }
@@ -57,9 +57,29 @@ const Register =  ({  dispatch, form }) => {
     }
 
 
+      useEffect(() => {
+         if( registerData.status_code == 200 ){
+              console.log(  'registerData', registerData )
+                message.success('注册成功');
+                form.resetFields();
+                // cdCallback();  倒计时依旧保持，不重置。
+                  dispatch({
+                    type : 'login/setState',
+                        payload : {
+                          key : 'registerData',
+                          value : {}
+                      }
+                  })
+          }
+
+         if(  registerData.status_code &&  registerData.status_code != 200 ){
+              message.warning( registerData.message )
+         }
+
+          console.log('register 仅仅执行一次');
+       }, [dispatch, form, registerData]);
 
 
-       useEffect(() => {}, []);
 
   
        if( util.getCookie('wshopLoginToken') ){ // 如果已经登录，跳转首页 
@@ -80,7 +100,7 @@ const Register =  ({  dispatch, form }) => {
                             </Form.Item>
 
                             <Form.Item >
-                              {getFieldDecorator('user_name', {
+                              {getFieldDecorator('username', {
                                 rules: [ 
                                      { required: true, message: '请输入用户名' },
                                     // { validator : validat_mobile }
@@ -128,9 +148,9 @@ const Register =  ({  dispatch, form }) => {
 
 
 function mapStateToProps(state) {
-    const { islogin } = state.login;
+    const {  registerData } = state.login;
     return {
-          islogin,
+          registerData,
           loading: state.loading.models.login,
      };
   

@@ -75,7 +75,8 @@ export const Countdown = props => {
                    reset()
             }
 
-         console.log('仅仅执行一次');
+         console.log('Countdown 仅仅执行一次');
+
       }, [activate, props.state, reset])
       
       return (
