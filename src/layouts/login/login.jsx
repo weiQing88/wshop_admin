@@ -52,7 +52,7 @@ const Login = props => {
                 message.error( loginData.message );
          } 
           console.log('login 仅仅执行一次');
-       }, [dispatch, form, loginData]);
+       }, [loginData]);
 
        if( util.getCookie('wshopLoginToken') && util.getCookie('userInfo') ){ // 如果已经登录，跳转首页 
                      return ( <Redirect to="/" /> )

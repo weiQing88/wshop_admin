@@ -22,7 +22,7 @@ export const ToolbarTabs = props => {
   let handleEvent = type => {
        props.onClick && props.onClick( type )
   }
-    useEffect(() =>{}, [ props.items ]);
+    useEffect(() =>{}, []);
 
      return (
         <ul className="toolbar_tabs" >
@@ -77,7 +77,7 @@ export const Countdown = props => {
 
          console.log('Countdown 仅仅执行一次');
 
-      }, [activate, props.state, reset])
+      }, [props.state])
       
       return (
          <span className="app-countdown-box">

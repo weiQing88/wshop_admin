@@ -108,7 +108,7 @@ const Register = props => {
          }
 
           console.log('register 仅仅执行一次');
-       }, [dispatch, form, registerData]);
+       }, [registerData]);
 
 
 
