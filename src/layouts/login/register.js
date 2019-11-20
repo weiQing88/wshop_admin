@@ -8,7 +8,7 @@ import util from '@/util';
 
 
 const Register = props => {
-      let {  dispatch, form, registerData } = props; 
+      let {  dispatch, form, registerData, loading } = props; 
       let { getFieldDecorator } = form;
 
       let [ counterState, setCounterState ] = useState('stop');
@@ -47,6 +47,7 @@ const Register = props => {
 
         // 倒计时结束回调函数
        let cdCallback = () => {
+            console.log('重置倒计时')
              setDisabled( false );
              setCounterState( 'stop' );
         }
@@ -90,7 +91,6 @@ const Register = props => {
 
       useEffect(() => {
          if( registerData.status_code == 200 ){
-              console.log(  'registerData', registerData )
                 message.success('注册成功');
                 form.resetFields();
                 // cdCallback();  倒计时依旧保持，不重置。
@@ -177,6 +177,7 @@ const Register = props => {
                             <Form.Item  className="clearFloat">
                             <RStar />
                             {getFieldDecorator('captcha', {
+                                // initialValue : 420842,
                                 rules: [ { required: true, message: '请输入验证码' } ],
                             })(  <Input style={{ width : 150 }} size="large" prefix={<Icon type="lock" />}  placeholder="手机验证码" />  )}
 
@@ -188,7 +189,10 @@ const Register = props => {
 
                             <Form.Item className="clearFloat">  
                                 <p style={{ float : 'left'  }} >已有账号？<Link to="/login">账号登录</Link></p>
-                                <Button onClick={ handleSubmit }  style={{ width : 110, float : 'right'  }}  type="primary" size="large"> 注册 </Button>
+                                <Button loading={ loading } onClick={ handleSubmit }  
+                                    style={{ width : 110, float : 'right'  }} 
+                                     type="primary" 
+                                     size="large"> 注册 </Button>
                              </Form.Item>
                         </Form>
                     </div>

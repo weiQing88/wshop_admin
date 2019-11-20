@@ -13,7 +13,7 @@ export default (function (params) {
  
 
     // 带上请求头
-   axios.defaults.headers.common['Authorization'] = util.getCookie('loginToken');
+   axios.defaults.headers.common['Authorization'] = `Bearer ${ util.getCookie('wshopLoginToken')}`;
 
    
 

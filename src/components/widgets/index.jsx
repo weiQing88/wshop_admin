@@ -50,11 +50,13 @@ export const Captcha = props => {
 // 倒计时
 export const Countdown = props => {
       let [ time, setTime ] = useState( 60 );
-      let timer = null;
+      let cdTimer = null;
        let activate = () => {
-             setInterval(() => {
+         cdTimer = setInterval(() => {
+              console.log('running')
                 if( time <= 1 ){
-                    clearInterval( timer );
+                    clearInterval( cdTimer );
+                    setTime( 60 );
                     props.afterStop();
                 }else{
                   setTime( --time )
@@ -63,7 +65,7 @@ export const Countdown = props => {
            }
       
       let reset = () => {
-           clearInterval( timer );
+           clearInterval( cdTimer );
            setTime( 60 );
       }
 
@@ -71,9 +73,7 @@ export const Countdown = props => {
             if( props.state == 'start' ){
                    reset();
                    activate();
-              }else if(  props.state == 'stop' ){
-                   reset()
-            }
+              }
 
          console.log('Countdown 仅仅执行一次');
 

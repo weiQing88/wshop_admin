@@ -27,9 +27,6 @@ import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, } from 'antd'
 
 
 
-
-
-
     const onTableChange = pageNumber => {}
 
     const onTableShowSizeChange = (current,pageSize) => {}

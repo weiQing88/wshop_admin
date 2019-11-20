@@ -9,7 +9,7 @@ import util from '@/util';
 
 
 const Login = props => {
-       let {  dispatch, form, captchaSvg, loginData } = props;
+       let {  dispatch, form, captchaSvg, loginData,loading } = props;
        let { getFieldDecorator } = form;
 
        // 更换验证码
@@ -91,13 +91,13 @@ const Login = props => {
                                    {getFieldDecorator('remember',{
                                         valuePropName: 'checked',
                                    })( <Checkbox >记住我</Checkbox>  )}
-                                    <Button style={{ width : 90,  float : 'right' }} onClick={ handleSubmit } type="primary"> 登录 </Button>
+                                    <Button loading={ loading } style={{ width : 90,  float : 'right' }} onClick={ handleSubmit } type="primary"> 登录 </Button>
                                 </Form.Item>
         
                                 <Form.Item className="clearFloat">  
                                     <p className="clearFloat" >
-                                        <span style={{ float : 'left' }}>没账号？<Link  to="/register">注册</Link>  </span>
-                                        <span style={{ float : 'right' }}> 使用<Link to="/"> 手机登录</Link> </span>
+                                        <span style={{ float : 'right' }}>没账号？<Link  to="/register">注册</Link>  </span>
+                                        {/* <span style={{ float : 'right' }}> 使用<Link to="/"> 手机登录</Link> </span> */}
                                     </p>
                                  </Form.Item>
                             </Form>

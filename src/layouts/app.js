@@ -18,6 +18,10 @@ function App(props) {
            setCollapsed(  !collapsed  )
       }
 
+      let handleReload = () => {
+           window.location.reload();
+      }
+
       let handleMenuEvent = ( { key } ) => {
               switch( key ){
                 case 'logout': handleLogout();
@@ -43,11 +47,9 @@ function App(props) {
          if( userInfo ) setUser( JSON.parse( userInfo ) );
     }, [])
 
-
-
   return (
     <Layout style={{ height : '100%' }} >
-       <SiderMenu location={ location } collapsed={ collapsed }  />
+      <SiderMenu location={ location } collapsed={ collapsed }  />
       <Layout>
         <Header style={{ background: '#fff', padding: 0 }}>
           <Row>
@@ -58,11 +60,11 @@ function App(props) {
                 type={ collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={ toggle}
                  />
-                 <Icon  title="刷新有页面" id="app-header-reload-icon" type="redo" />
+                 <Icon onClick={  handleReload  }  title="刷新有页面" id="app-header-reload-icon" type="redo" />
              </Col>
              <Col span={ 10 } offset={ 9 } > 
                     <figure id="user-info-block">
-                        <Avatar size={ 25 } shape="square" src={ user.Avatar || defaultAvater } />
+                        <Avatar size={ 25 } shape="square" src={ user.avatar || defaultAvater } />
                            <Dropdown overlay={<Menu  onClick={ handleMenuEvent } >
                                             <Menu.Item key="1">
                                               <span > 个人中心 </span>

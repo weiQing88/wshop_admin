@@ -1,4 +1,5 @@
 import services from '../services/index'
+import { message } from 'antd';
 
 export default {
     namespace : 'category',
@@ -41,17 +42,30 @@ export default {
                             total : resp.data.length,
                             }
                     });
+        },
+
+        *createCategory( action, { put, call, select }){
+               let res = yield call( services.createCategory, action.payload );
+               if( res.data.status_code == 200 ){
+                   
+               }else{
+                    message.error( res.data.message )
+               }
+                console.log( 'res', res )
         }
+
     },
+
+
     subscriptions : {
         setup({ dispatch, history }) {
-                history.listen( location  => {
-                       if( location.pathname == '/goods/category' ){
-                              console.log( '执行' )
-                               dispatch({  type: 'fetCategory'})
-                       }
+                // history.listen( location  => {
+                //        if( location.pathname == '/goods/category' ){
+                //               console.log( '执行' )
+                //             //   dispatch({  type: 'fetCategory'})
+                //        }
 
-                })
+                // })
         }
 
     }

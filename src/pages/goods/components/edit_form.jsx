@@ -11,11 +11,6 @@ function getBase64(img, callback) {
 }
 
 
-
-
-
-
-
 const EditForm =  function( props ){
      let { form, data = {}, visible, dispatch, isEdited } = props,
          { getFieldDecorator } = form;
@@ -89,15 +84,30 @@ const EditForm =  function( props ){
 
 
      let handleOk = () => {
-          dispatch({
-                type : 'category/toggle',
-                payload : {
-                    visible : false,
-                    isEdited : false,
-                }
-          })
+
+         form.validateFields((err, fieldsValue) => {
+            if(err) return;
+             console.log( 'fieldsValue', fieldsValue )
+              dispatch({
+                        type : 'category/createCategory',
+                        payload : fieldsValue
+              })
+
+
+          });
+
+
+        //   dispatch({
+        //         type : 'category/toggle',
+        //         payload : {
+        //             visible : false,
+        //             isEdited : false,
+        //         }
+        //   })
 
      }
+
+
 
      let handleCancel = () => {
             dispatch({
@@ -131,6 +141,7 @@ const EditForm =  function( props ){
                             rules: [{ required: true, message: '分类名称' }],
                         })( <Input  placeholder="请输入分类名称" />)}
                     </Form.Item>
+
 
                     {/* <Form.Item label="分类图片">
                         {getFieldDecorator('img_url', { 
