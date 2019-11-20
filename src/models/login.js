@@ -26,15 +26,22 @@ export default {
     },
     effects : {
         *login( action, { put, call } ){
-
             let res =  yield call( loginServices.login, action.payload );  
-             
-          //  let { username, token, avater, authority } = result.data;
-
-                //  util.setCookie('wshopLoginToken', token );
-
-                //  util.setCookie('userInfo', JSON.stringify( { username, avater, authority } ));
-
+              if( res.data.status_code != 200 ){
+                   message.error( res.data.message );
+                   return false;
+              }
+                let { token, userinfo } = res.data;
+                util.setCookies([
+                     {
+                         key : 'wshopLoginToken',
+                         val : token,
+                     },
+                     {
+                        key : 'userInfo',
+                        val :  JSON.stringify( userinfo ),
+                     }
+                ]);
                  yield put({ 
                      type : 'setState', 
                       payload : { 
@@ -45,24 +52,19 @@ export default {
          },
 
         *logout( action, { put, call }){
-            let result =  yield call( loginServices.logout, action.payload ); 
-              // console.log( 'result---', result )
-               if( result.data.status_code == 200 ){
-                        util.deleteCookies([ 'wshopLoginToken', 'userInfo' ])
-                        yield put({ 
-                            type : 'setState', 
-                             payload : { 
-                                key : 'islogged',
-                                value : false
-                            } 
-                        })
-                  window.location.reload()
+            let res =  yield call( loginServices.logout, action.payload ); 
+               console.log( 'result---', res )
+               if( res.data.status_code == 200 ){
+                    util.deleteCookies([ 'wshopLoginToken', 'userInfo' ])
+                    window.location.reload()
+               }else{
+                    message.error(  res.data.message )
                }
         },
 
         *register( action, { put, call }){
-              let res = yield call( loginServices.register, action.payload );
-                    yield put({
+               let res = yield call( loginServices.register, action.payload );
+                yield put({
                            type : 'setState',
                             payload : {
                                 key : 'registerData',

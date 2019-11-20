@@ -85,3 +85,7 @@ export const Countdown = props => {
          </span>
       )
 }
+
+
+ // 表单项提示必填红星
+export const RStar = props => ( <em className="formItem-required-star">*</em> );

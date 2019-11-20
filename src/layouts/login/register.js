@@ -2,12 +2,13 @@ import Redirect from 'umi/redirect';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import { useEffect, useState } from 'react';
-import { Form, Button, Input, Icon, Checkbox, message  } from 'antd';
-import { Captcha, Countdown } from '@/components/widgets';
+import { Form, Button, Input, Icon, Checkbox, message,Upload  } from 'antd';
+import { Captcha, Countdown, RStar } from '@/components/widgets';
 import util from '@/util';
 
 
-const Register =  ({  dispatch, form, registerData }) => {
+const Register = props => {
+      let {  dispatch, form, registerData } = props; 
       let { getFieldDecorator } = form;
 
       let [ counterState, setCounterState ] = useState('stop');
@@ -26,15 +27,21 @@ const Register =  ({  dispatch, form, registerData }) => {
           
       }
 
-        // 登陆
+        // 注册
        let handleSubmit = () => {
            form.validateFields((err, fieldsValue) => {
              if(err) return;
-                fieldsValue.password =  util.secret( fieldsValue.password );
-                    dispatch({
-                        type : 'login/register',
-                        payload : fieldsValue
-                    })
+                  fieldsValue.password =  util.secret( fieldsValue.password );
+                 if( util.isValid( fieldsValue.avatar ) ){ // 上传头像
+                      let formdata = new FormData();
+                          formdata.append('avatar',  fieldsValue.avatar[0].originFileObj );
+                          Object.keys( fieldsValue ).forEach( key => {
+                              if( key != 'avatar' ) formdata.append(key, fieldsValue[key]);
+                          });
+                          dispatch({ type : 'login/register', payload : formdata });
+                 }else{
+                       dispatch({ type : 'login/register', payload : fieldsValue });
+                 }
             })
        }
 
@@ -54,6 +61,30 @@ const Register =  ({  dispatch, form, registerData }) => {
     let validat_email = ( rule, value, callback  ) => {
         if( !util.checkEmail( value ) ) callback('请输入合法邮箱');
         callback();
+    }
+
+
+      // 上传图片方法
+     let normFile = e => {
+       //  console.log('Upload event:', e );
+      if (Array.isArray(e)) {
+           return e;
+       }else{
+        if( e.fileList.length > 1 ){
+            e.fileList =[ e.fileList[0] ];
+        }     
+        let whileList = ['image/jpeg', 'image/png'];
+          if( whileList.indexOf( e.file.type ) == -1 ){
+                 message.warning('仅允许上传jpg/png图片');
+                 e.fileList = [];
+          }
+        return e && e.fileList;
+       }
+    };
+
+     // 移除图片
+    let handleRemove = file => {
+          form.setFieldsValue({ avatar : undefined })
     }
 
 
@@ -88,9 +119,10 @@ const Register =  ({  dispatch, form, registerData }) => {
 
                 return (
                     <div className="app-login-wrapper">
-                      <Form className="app-login-form"  style={{ marginTop : '-235px' }}>
+                      <Form className="app-login-form"  style={{ marginTop : '-280px' }}>
                         <Form.Item > <h4> WSHOP 管理系统-注册 </h4> </Form.Item>
                          <Form.Item >
+                             <RStar />
                               {getFieldDecorator('mobile', {
                                 rules: [ 
                                      { required: true, message: '请输入手机号' },
@@ -100,6 +132,7 @@ const Register =  ({  dispatch, form, registerData }) => {
                             </Form.Item>
 
                             <Form.Item >
+                              <RStar />
                               {getFieldDecorator('username', {
                                 rules: [ 
                                      { required: true, message: '请输入用户名' },
@@ -109,6 +142,7 @@ const Register =  ({  dispatch, form, registerData }) => {
                             </Form.Item>
 
                             <Form.Item>
+                            <RStar />
                             {getFieldDecorator('password', {
                                 rules: [ { required: true, message: '请输入密码' } ],
                             })(  <Input.Password  size="large" prefix={<Icon type="key" />}  placeholder="密码" />  )}
@@ -123,8 +157,25 @@ const Register =  ({  dispatch, form, registerData }) => {
                             })(  <Input  size="large" prefix={<Icon type="inbox" />}  placeholder="邮箱" />  )}
                             </Form.Item>
 
+
+                            <Form.Item >
+                                {getFieldDecorator('avatar', {
+                                  valuePropName: 'fileList',
+                                  getValueFromEvent: normFile,
+                                })(
+                                  <Upload 
+                                     name="avatar" 
+                                     onRemove={ handleRemove }
+                                     beforeUpload={ ( file, fileList ) =>{ return false }}
+                                     >
+                                    <Button> <Icon type="upload" /> 上传头像 </Button>
+                                  </Upload>,
+                                )}
+                              </Form.Item>
+
         
                             <Form.Item  className="clearFloat">
+                            <RStar />
                             {getFieldDecorator('captcha', {
                                 rules: [ { required: true, message: '请输入验证码' } ],
                             })(  <Input style={{ width : 150 }} size="large" prefix={<Icon type="lock" />}  placeholder="手机验证码" />  )}

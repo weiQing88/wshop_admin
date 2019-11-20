@@ -119,6 +119,17 @@ button{
 
   }
 
+.formItem-required-star{
+   position: absolute;
+   top: -9px;
+   left: -12px;
+   color: red;
+   z-index: 10;
+   font-size: 20px;
+   height: 15px;
+   line-height: 15px;
+}
+
 
 /* 面包屑 start */
 .app-breadcrumbs-wrapper{

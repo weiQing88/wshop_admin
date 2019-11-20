@@ -120,8 +120,17 @@ class Util {
         // 只存于页面生命周期
         document.cookie = key + "=" + val;
      }
-
   }
+
+  setCookies(){
+       if( arguments.length == 1 && Array.isArray( arguments[0] ) ){
+             arguments[0].forEach( arg => {
+                  this.setCookie( arg.key, arg.val, arg.time )
+             })
+       }
+  }
+
+
 
   getCookie(key) {
      // nodejs 环境没有 window、document 对象

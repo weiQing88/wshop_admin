@@ -1,5 +1,5 @@
 // import styles from './index.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Layout, Icon,Row, Col, Dropdown, Menu, Avatar  } from 'antd';
 import SiderMenu from '@/components/sidermenu';
@@ -11,6 +11,8 @@ function App(props) {
 
       let { location, dispatch } = props;
       let [ collapsed, setCollapsed ] = useState( false );
+      let [ user, setUser ] = useState({  });
+
       let defaultAvater = require('../assets/images/avater.png');
       let toggle = () => {
            setCollapsed(  !collapsed  )
@@ -26,14 +28,21 @@ function App(props) {
 
      // 退出登录
     let handleLogout = () => {
-            let userInfo = util.getCookie('userInfo')
+            let userInfo = util.getCookie('userInfo');
               if( userInfo ){
                   dispatch({
                     type : 'login/logout',
-                    payload : userInfo
+                    payload : JSON.parse( userInfo )
                   })
               }
       }
+
+
+    useEffect(() => {
+       let userInfo = util.getCookie('userInfo');
+         if( userInfo ) setUser( JSON.parse( userInfo ) );
+    }, [])
+
 
 
   return (
@@ -53,7 +62,7 @@ function App(props) {
              </Col>
              <Col span={ 10 } offset={ 9 } > 
                     <figure id="user-info-block">
-                        <Avatar size={ 25 } shape="square" src={ defaultAvater } />
+                        <Avatar size={ 25 } shape="square" src={ user.Avatar || defaultAvater } />
                            <Dropdown overlay={<Menu  onClick={ handleMenuEvent } >
                                             <Menu.Item key="1">
                                               <span > 个人中心 </span>
@@ -63,7 +72,7 @@ function App(props) {
                                               <span > 退出登录 </span>
                                             </Menu.Item>
                                           </Menu>}>
-                           <span className="user-dropdown-name" > 超级用户 <Icon type="down" /></span>
+                           <span className="user-dropdown-name" > { user.username || '超级用户' }  <Icon type="down" /></span>
                           </Dropdown>
                     </figure>
               </Col>

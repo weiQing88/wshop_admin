@@ -3,12 +3,13 @@ export default {
       login( p = {} ){
         return api.post('api/admin/login', p )
      },
-     logoutService( p = {} ){
+     logout( p = {} ){
         return api.post('api/admin/logout', p )
      },
      register( p = {} ){
-      return api.post('api/admin/register', p )
+           return api.post('api/admin/register', p );
      },
+
      captcha( p ){
          return api.get('api/admin/captcha', { params : p })
      },
