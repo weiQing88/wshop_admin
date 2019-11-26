@@ -1,6 +1,6 @@
 import services from '../services/index'
-import commonModel from '@/util/model';
 import util from '@/util';
+import { message } from 'antd';
 
 
     export default   {
@@ -14,13 +14,26 @@ import util from '@/util';
             total : 0,
             dataObject : {},
             categoryDataSource : [],
+            goodsFormInitialData : {},
         },
-        reducers : Object.assign( commonModel.reducers, {
+        reducers : {
+                setState( state, { payload } ){
+                    if( Array.isArray( payload ) ){
+                    payload.forEach( item => {
+                            state[ item.key ] = item.value;
+                    })
+                    }else{
+                    state[ payload.key ] = payload.value;
+                    }            
+                    return state;
+            },
+                
             toggle( state, { payload } ){
                  state.goodsEditFormVisible = payload;
                  state.isEdited = payload ? '' : false;
                  return state;
             },
+
             setDataSource( state, { payload }  ){
                 state.dataObject = {
                       data : payload,
@@ -41,17 +54,38 @@ import util from '@/util';
             },
 
           
-       }),
+       },
        
         effects : {
+
             *fetGoodsData( action, { put, call  }  ){
-                let resp = yield call( services.fetGoods, action.payload );
-                    yield put({
-                         type : 'setDataSource', 
-                         payload : resp.data
-                    })
+                let res = yield call( services.fetGoods, action.payload );
+
+                //  console.log( 'res', res )
+
+                  if( res.data.status_code == 200 ){
+
+
+
+                  }else{
+                       message.error( res.data.message );
+                  }
+
+
+                    // yield put({
+                    //      type : 'setDataSource', 
+                    //      payload : resp.data
+                    // })
                // console.log( 'resp.data', resp.data )
             },
+
+
+            *editGoods( action, { put, select, call }){
+
+
+
+            },
+
             *searchGoodsData( action, { put, call } ){
                let resp = yield call( services.searchGoods, action.payload )
                   console.log( 'resp', resp )

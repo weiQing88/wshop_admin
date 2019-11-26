@@ -1,6 +1,22 @@
 import api from '@/util/api';
 
 export default {
+       fetGoods( p = {} ){
+            return api.get('api/admin/goods',{ params : p })
+       },
+
+      searchGoods( p ){
+            return api.post('api/admin/goods/',p)
+      },
+
+       createGoods( p = {} ){
+          return api.post('api/admin/goods/create', p )
+       },
+
+      editGoods( p = {} ){
+         return api.patch('api/admin/goods/edit', p )
+      },
+
        fetCategory(  p = {}  ){
             return api.get('api/admin/goods/category', { params : p })
       },
@@ -12,12 +28,6 @@ export default {
       },
       deleteCategory( p = {} ){
         return api.delete('api/admin/goods/category/delete', { params : p })
-      },
-      fetGoods(){
-          return api.get('api/admin/goods', { params : p })
-      },
-      searchGoods( p ){
-            return api.post('api/goods/',p)
       },
       attrs( p = {} ){
          return api.get('api/admin/goods/attrs', { params : p })

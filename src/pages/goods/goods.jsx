@@ -5,29 +5,14 @@ import AppLayout from '@/components/app_layout';
 import Toolbar from './components/toolbar';
 import { ToolbarTabs } from '@/components/widgets';
 
-import GoodsEditForm from './components/edit_form';
+import GoodsEditForm from './components/edit_goods';
+
 import AdvancedSearch from './components/advancedSearch';
 import { Tabs, Card, Icon, Badge, Table, Divider  } from 'antd';
 import util from '@/util';
 
-const data = [
-  {
-    id :1,
-    goods_name : '爽脆姜酸',
-    goods_number : 20,
-    shop_price : 36,
-    market_price : 37,
-    goods_thumb : '',
-    category_name : '酸野',
-    is_hot : 1,
-    is_recommend : 0,
-    is_on_sale : 1,
-  } 
-];
- 
 
-
- const Goods = function({ dispatch, goodsEditFormVisible, categoryDataSource, dataObject, searchFormVisible, limit, loading, total, page }){
+ const Goods = function({ dispatch, goodsEditFormVisible, isEdited, categoryDataSource, dataObject, searchFormVisible, limit, loading, total, page }){
 
     let { data : dataSource = [], dataState = {} } = dataObject;
 
@@ -56,6 +41,7 @@ const data = [
 
    // 工具栏处理函数
     const handleToolbarEvent = ( arg ) => {
+
             let { type, visible, data } = arg;
             if( type == 'search' ){
                  for( let key in data ){
@@ -69,16 +55,22 @@ const data = [
                    });
                 return true;
             } else if( type == 'add' ){
-              dispatch({  type : 'goods/toggle', payload : true,  isEdited : false  });
+                  dispatch({ 
+                        type : 'goods/setState', 
+                        payload : [
+                                {  key : 'goodsEditFormVisible', value : true  },
+                                {  key : 'isEdited', value : false },
+                                {  key : 'goodsFormInitialData', value : {} }
+                          ]  
+                    });
+                 dispatch({   type : 'category/fetCategory'});
+
             }else if( type == 'menuEvent' ){
               console.log();
             }else if( type == 'searchModal' ){
 
-
-                  
                   console.log( 'categoryDataSource', categoryDataSource )
 
-                  
                  dispatch({  type : 'goods/showADVSModal' });
 
 
@@ -88,10 +80,9 @@ const data = [
     }
 
 
-    const handleTabEvent = ( arg ) => {
+    let handleTabEvent = ( arg ) => {
             console.log( arg )
     }
-
 
 
 
@@ -103,7 +94,7 @@ const data = [
           payload : undefined,
        });
        
-     console.log('仅仅需要执行一次')
+     console.log(' goods 仅仅需要执行一次')
 
      }, [dispatch]);
 
@@ -253,7 +244,14 @@ const data = [
 
                />
                 
-           <GoodsEditForm />
+           <GoodsEditForm
+                  visible={ goodsEditFormVisible }
+                  isEdited={ isEdited }
+                  dispatch={ dispatch }
+                  loading={ loading }
+                  category={ categoryDataSource }
+
+             />
 
          </AppLayout>    
       )
@@ -262,13 +260,14 @@ const data = [
 
 
 function mapStateToProps(state) {
-  const { goodsEditFormVisible, searchFormVisible,  dataObject, limit, total, page } = state.goods;
+  const { goodsEditFormVisible, searchFormVisible, isEdited, dataObject, limit, total, page } = state.goods;
   const { dataSource : categoryDataSource } = state.category;
 
   return {
         searchFormVisible,
         goodsEditFormVisible,
         categoryDataSource,
+        isEdited,
         page,
         limit,
         total,

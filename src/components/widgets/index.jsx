@@ -28,7 +28,8 @@ export const ToolbarTabs = props => {
         <ul className="toolbar_tabs" >
              {
                 items.map( ( item, index ) =>(
-                    <li key={ index } onClick={ handleEvent.bind( this, item.name ) }  className={ item.selected ? 'active' : '' }> <span> { item.name } </span> <Badge count={ item.count } /> </li>
+                    <li key={ index } onClick={ handleEvent.bind( this, item.name ) } 
+                       className={ item.selected ? 'active' : '' }> <span> { item.name } </span> <Badge count={ item.count } /> </li>
                 ))
              }
        </ul>
@@ -105,4 +106,28 @@ export const TableSrollStatus = offset => {
            }
        }, [])
         return y  
+}
+
+
+
+export const UploadImage = props => {
+       let { src = '', onClick = () => {} } = props;
+      return (
+         <div className="upload-image-box">
+              <img src={ src } alt=""/>
+              <span className="upload-image-box-cover">
+                  <Icon type="delete" onClick={ onClick } />
+              </span>
+         </div>
+  )
+}
+
+export const UploadPlusButton = props => {
+    let { text = '图片', loading = false } = props;
+     return (
+      <div>
+      <Icon type={ loading ? 'loading' : 'plus'} /> 
+          <p className="ant-upload-text">{ text }</p>
+      </div>
+     )
 }

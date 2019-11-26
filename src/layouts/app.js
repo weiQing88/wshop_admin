@@ -60,7 +60,7 @@ function App(props) {
                 type={ collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={ toggle}
                  />
-                 <Icon onClick={  handleReload  }  title="刷新有页面" id="app-header-reload-icon" type="redo" />
+                 <Icon onClick={  handleReload  }  title="清除缓存" id="app-header-reload-icon" type="redo" />
              </Col>
              <Col span={ 10 } offset={ 9 } > 
                     <figure id="user-info-block">

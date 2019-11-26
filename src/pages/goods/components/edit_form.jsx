@@ -48,7 +48,7 @@ import util from '@/util';
     componentWillReceiveProps( newProps ){
         if( newProps.visible && this.props.visible == false ){
             console.log( ' newProps.visible && this.props.visible == false' );
-            let { dispatch, isEdited, data } = newProps;
+            let { dispatch, isEdited, data = {} } = newProps;
              this.setState({ visible : true });
                 dispatch({
                     type : 'attrselector/fetAttrs',

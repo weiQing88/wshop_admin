@@ -156,6 +156,42 @@ button{
 
 
 
+.upload-image-box{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.upload-image-box img{
+    width: 100%;
+}
+
+.upload-image-box .upload-image-box-cover{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0,0,0,0.45);
+     opacity: 0;
+}
+
+.upload-image-box .upload-image-box-cover:hover{
+      opacity: 1;
+}
+
+.upload-image-box i.anticon-delete{
+     position: absolute;
+     top: 42%;
+     left: 42%;
+     z-index: 10;
+     font-size: 20px;
+     font-weight: bolder;
+     color: #fff;
+}
+
+
 .app-tableCell-image{
     margin: 0 auto;
      width: 80px;
