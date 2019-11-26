@@ -2,7 +2,7 @@ import NavLink from 'umi/navlink';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 const routes = [
         { path: '/',  breadcrumb: '首页' },
-        { path: '/goods',  breadcrumb: '商品列表'  },
+        { path: '/goods',  breadcrumb: '商品'  },
         { path: '/goods/category',  breadcrumb: '商品分类'  },
         { path: '/goods/attrs',  breadcrumb: '商品参数'  },
 

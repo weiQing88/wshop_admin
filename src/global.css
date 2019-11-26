@@ -27,28 +27,6 @@ body {
 
 
 
-::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: rgba(0,0,0,0.1);
-  border: 1px solid #ccc;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: linear-gradient(left, #fff, #e4e4e4);
-  border: 1px solid #aaa;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #fff;
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(left, #22ADD4, #1E98BA);
-}
-
-
-
 p,figure,dl,dt,dd,
 h1,h2,h3,h4,h5,h6,ol,li,ul,figure,figcaption{
     margin: 0;
@@ -93,6 +71,15 @@ button{
 }
 
 
+#app-logo{
+    height: 52px;
+    line-height: 52px;
+    background-color: #eb3232;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+}
 
 #wshop_app_layout{
       margin: 16px;
@@ -130,6 +117,17 @@ button{
    line-height: 15px;
 }
 
+
+
+.ant-table-pagination.ant-pagination{
+  float: left;
+  margin-left: 10px;
+}
+
+
+.deletebutton{
+    color : #c41f25;
+}
 
 /* 面包屑 start */
 .app-breadcrumbs-wrapper{
@@ -308,7 +306,7 @@ margin-bottom: 25px;
 
 @import './layouts/index.css';
 @import './pages/index/index.less';
-@import './components/widgets/widgets.less';
+@import './components/component.less';
 @import './pages/goods/goods.less';
 @import './pages/order/order.less';
 @import './pages/members/members.less';

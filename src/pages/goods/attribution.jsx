@@ -2,29 +2,16 @@ import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/app_layout';
 import EditAttrs from './components/edit_attrs';
-
+import { TableSrollStatus } from '@/components/widgets';
 import util from '@/util';
-import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, } from 'antd';
-
-
-
-const data = [
-    {
-        id : 1,
-        name : '大小',
-        attrs_value : [ 100, 100 ]
-    },
-    {
-        id : 2,
-        name : '净重',
-        attrs_value : [ '30公斤', '50公斤', '70公斤' ]
-    }
-];
+import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, Popconfirm } from 'antd';
 
 
 
 /** 商品属性 */
-const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, total, page }){
+const AttrsCompt  = function({ visible, dispatch, isEdited, limit, loading, total, page, dataSource, formDataSource }){
+
+       let y = TableSrollStatus( 195 );
 
        const showEditForm = () => {
              dispatch({
@@ -35,11 +22,40 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
                   }
              })
        }
-       const onTableCellEvent = () => {}
 
 
-       const onTableChange = () => {}
-       const onTableShowSizeChange = () => {}
+       const onTableCellEvent = ( arg ) => {
+                if( arg.type == 'edit'){
+                    dispatch({
+                        type : 'attrs/toggle',
+                        payload : {
+                            visible : true,
+                            isEdited : true,
+                            data : arg.data,
+                        }
+                    })
+                }else if( arg.type == 'delet' ){
+                    dispatch({
+                        type : 'attrs/delete',
+                        payload : { attr_id : arg.data.attr_id }
+                    })
+                }
+        }
+
+       const onTableChange = (page, pageSize) => {
+               dispatch({
+                   type : 'attrs/fetAttrs',
+                   payload : { page, limit : pageSize }
+                });
+       }
+
+       const onTableShowSizeChange = (current, size) => {
+                dispatch({
+                    type : 'attrs/fetAttrs',
+                    payload : { page :current , limit : size }
+                });
+       }
+
 
        const transform = ( attrs ) => {
             if( util.isValid( attrs ) ){
@@ -50,6 +66,12 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
         }
 
 
+       useEffect(() =>{
+            dispatch({
+                 type : 'attrs/fetAttrs',
+                 payload : { page, limit }
+                })
+       }, []);
 
        return (
             <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
@@ -60,8 +82,8 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
                  bordered 
                 //  expandedRowRender={ record => <p className="expanded-row" >{ transform( record.category_attrs ) }</p>}
                  style={{ backgroundColor : '#fff' }}
-                // scroll={{ y : '600px' }}
-                 pagination={{
+                 scroll={{ y }}
+                  pagination={{
                   pageSizeOptions: ['10','20', '30', '50'],
                   current: Number(page), 
                   pageSize: Number(limit),
@@ -74,24 +96,24 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
                       onChange: onTableChange,
                       onShowSizeChange: onTableShowSizeChange
                   }}
-                  dataSource={ data }
+                  dataSource={ dataSource }
                   rowKey="id"
                   columns={[
                      {
                          title: '名称',
-                         dataIndex: 'name',
-                         key: 'name',
+                         dataIndex: 'attr_name',
+                         key: 'attr_name',
                          align : 'center',
                       },
                       {
                         title: '属性值',
-                        dataIndex: 'attrs_value',
-                        key: 'attrs_value',
+                        dataIndex: 'attr_value',
+                        key: 'attr_id',
                         align : 'center',
                         render : ( text, record ) => (
                                 <span style={{ display: 'block',textAlign : 'center', maxWidth : '100%' }}
                                    className="ell category-table-cell"> 
-                                   { transform( record.attrs_value ) } 
+                                   { transform( record.attr_value ) } 
                                 </span>
                              )
                      },
@@ -102,7 +124,9 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
                         render: (text, record) => (
                           <span className="table-action-buttons">
                               <button type="button"  onClick={ onTableCellEvent.bind( this, { type : 'edit', data : record }) }  > 编辑 </button>
-                              <button type="button"  onClick={ onTableCellEvent.bind( this, { type : 'delet', data : record }) } > 删除 </button>
+                              <Popconfirm  onConfirm={  onTableCellEvent.bind( this, { type : 'delet', data : record })  } title="确定删除该项？" okText="是" cancelText="否">
+                                  <button className="deletebutton" type="button" > 删除 </button>
+                              </Popconfirm>
                           </span>
                         ),
                       },
@@ -112,7 +136,7 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
 
                 <EditAttrs
                     visible={ visible }
-                    data={ {} }
+                    data={ formDataSource }
                     dispatch={ dispatch }
                     isEdited={ isEdited }   
                   />
@@ -123,14 +147,16 @@ const AttrsCompt  = function({ dispatch, visible, isEdited, limit, loading, tota
 
 
 function mapStateToProps(state) {
-   const { visible, isEdited, limit, total, page } = state.attrs;
+   const { visible, isEdited, limit, total, page, dataSource, formDataSource } = state.attrs;
     return {
           visible,
           isEdited,
           page,
           limit,
           total,
-         loading: state.loading.models.goods,
+          dataSource,
+          formDataSource,
+          loading: state.loading.models.attrs,
     };
   }
   

@@ -142,7 +142,7 @@ export default ( props ) => {
        return (
         <Sider trigger={null} collapsible collapsed={ collapsed }>
 
-        <div className="logo"> logo </div>
+        <div id="app-logo"> WSHOP 商城 </div>
  
          <Menu  
              mode="inline" 

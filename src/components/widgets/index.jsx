@@ -89,3 +89,20 @@ export const Countdown = props => {
 
  // 表单项提示必填红星
 export const RStar = props => ( <em className="formItem-required-star">*</em> );
+
+
+// Table 组件的 y 属性值
+export const TableSrollStatus = offset => {
+        let [ y, setY ] = useState( true );
+        let resize = () => {
+              setTimeout(() =>{  setY(  window.appLayoutHeight - offset ) })
+        }
+       useEffect(() =>{
+             resize();
+              window.addEventListener('resize', resize );
+           return () => {
+                window.removeEventListener('resize', resize );
+           }
+       }, [])
+        return y  
+}
