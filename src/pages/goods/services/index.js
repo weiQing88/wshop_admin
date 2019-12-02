@@ -16,6 +16,16 @@ export default {
       editGoods( p = {} ){
          return api.patch('api/admin/goods/edit', p )
       },
+      editGoodsStatus( p = {} ){
+           return api.patch('api/admin/goods/status', p )
+      },
+      setGoodsPromotion( p = {} ){
+        return api.patch('api/admin/goods/promotion', p )
+      },
+
+      deleteGoods(  p = {}  ){
+        return api.delete('api/admin/goods/delete', { params : p })
+      },
 
        fetCategory(  p = {}  ){
             return api.get('api/admin/goods/category', { params : p })

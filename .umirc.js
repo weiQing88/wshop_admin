@@ -21,6 +21,7 @@ export default {
           Routes: ['src/pages/authorized'],
           authority: ['admin', 'user'],
         },
+
         {
           path: '/',
           component: '../pages/index/index',
@@ -122,15 +123,34 @@ export default {
 
   },
 
-   proxy:{
-        "/api": {
-          "target": "http://localhost:7001", 
-          logLevel: 'debug',
-          "changeOrigin": true,
-          // "pathRewrite": { "^/api" : "" },
-           "secure": false
-        }
-    },
+
+  proxy : [
+      {
+        context: ['/public', '/api'],
+        "target": "http://localhost:7001", 
+        logLevel: 'debug',
+        "changeOrigin": true,
+        // "pathRewrite": { "^/api" : "" },
+         "secure": false
+      }
+  ],
+
+  //  proxy:{
+  //       "/api": {
+  //         "target": "http://localhost:7001", 
+  //         logLevel: 'debug',
+  //         "changeOrigin": true,
+  //         // "pathRewrite": { "^/api" : "" },
+  //          "secure": false
+  //       },
+  //      "/public" : {
+  //        "target": "http://localhost:7001", 
+  //        logLevel: 'debug',
+  //        "pathRewrite": { "^/public" : "/public" },
+  //        "changeOrigin": true,
+  //        "secure": false
+  //      }
+  //   },
 
   theme: {
     'primary-color': '#eb3232',

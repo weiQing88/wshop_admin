@@ -19,8 +19,8 @@ export const IconFont = Icon.createFromIconfontCN({
 // 顶部工具栏
 export const ToolbarTabs = props => {
   let { items = [],  } = props;
-  let handleEvent = type => {
-       props.onClick && props.onClick( type )
+  let handleEvent = item => {
+       props.onClick && props.onClick( item )
   }
     useEffect(() =>{}, []);
 
@@ -28,7 +28,7 @@ export const ToolbarTabs = props => {
         <ul className="toolbar_tabs" >
              {
                 items.map( ( item, index ) =>(
-                    <li key={ index } onClick={ handleEvent.bind( this, item.name ) } 
+                    <li key={ index } onClick={ handleEvent.bind( this, item ) } 
                        className={ item.selected ? 'active' : '' }> <span> { item.name } </span> <Badge count={ item.count } /> </li>
                 ))
              }
@@ -110,16 +110,46 @@ export const TableSrollStatus = offset => {
 
 
 
-export const UploadImage = props => {
-       let { src = '', onClick = () => {} } = props;
+export const UploadImages = props => {
+       let [ imageUrl, setImageUrl ] = useState([]);
+       let { src = '', fileList = [], onClick = () => {} } = props;
+
+       let getBase64 = (file) => {
+             return new Promise((resolve, reject) => {
+                   const reader = new FileReader();
+                         reader.readAsDataURL(file);
+                         reader.onload = () => resolve(reader.result);
+                         reader.onerror = error => reject(error);
+               })
+        }
+
+        if( fileList.length ){
+             let urls = [];
+             fileList.forEach( async file => {
+                  if( file.url ){
+                       urls.push( file.url );
+                  }else{
+                    let u = await getBase64( file );
+                      urls.push( u );  
+                  }
+                
+             });
+             setImageUrl( urls );
+        }
+
       return (
-         <div className="upload-image-box">
-              <img src={ src } alt=""/>
-              <span className="upload-image-box-cover">
-                  <Icon type="delete" onClick={ onClick } />
-              </span>
-         </div>
-  )
+           <div className="upload-image-list">
+                  {
+                    imageUrl.map( url =>(
+                         <div className="upload-image-box">
+                         <img src={ url } alt=""/>
+                         <span className="upload-image-box-cover">
+                             <Icon type="delete" onClick={ onClick } />
+                            </span>
+                        </div>
+                    ))
+                  }
+           </div>)
 }
 
 export const UploadPlusButton = props => {

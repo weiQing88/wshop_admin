@@ -1,5 +1,7 @@
 import qs from 'qs';
 import CryptoJS from 'crypto-js';
+import router from 'umi/router';
+
 
 // 检测传入的参数类型； 【 'undefined','object', 'number', 'string', 'boolean' 、'function' 】
 function checkType(target, hook = undefined) {
@@ -365,7 +367,7 @@ purifyKeywords = ( value ) => {
 }
 
   
-  toParam = () =>{  // 把 url 参数转成对象
+  getQuery = () =>{  // 把 url 参数转成对象
     var url = window.location.search; 
     var theRequest = '';
     var param = {};
@@ -375,18 +377,6 @@ purifyKeywords = ( value ) => {
     param = qs.parse( theRequest );
     return  param 
   }
-
-
-
-  toQuery = ( param ) =>{ // 转换成 url 
-    if( this.isValid( param ) ){
-        var stringifyParam = qs.stringify( param  );
-            window.history.pushState({}, '', window.location.href.split('?')[0] + '?' + stringifyParam )
-      }else{
-            window.history.pushState({}, '', window.location.href.split('?')[0] )
-      }
-  }
-
 
 
   getScrollbarWidth() { // 获取页面滚动条宽度

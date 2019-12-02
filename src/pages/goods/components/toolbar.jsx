@@ -26,8 +26,8 @@ const Toolbar = function( props ){
           <Menu.Item key="3">批量上架</Menu.Item>
           <Menu.Item key="4">批量下架</Menu.Item>
           <Menu.Item key="5">删除</Menu.Item>
-          <Menu.Item key="6">打标签</Menu.Item>
-          <Menu.Item key="7">去标签</Menu.Item>
+          {/* <Menu.Item key="6">打标签</Menu.Item>
+          <Menu.Item key="7">去标签</Menu.Item> */}
         </Menu>
       );
 
@@ -40,6 +40,7 @@ const Toolbar = function( props ){
                             <Input style={ formItemStyle }  placeholder="请输入商品名称" />,
                         )}
                         </Form.Item>
+{/*                         
                         <Form.Item >
                             {getFieldDecorator('is_on_sale')(
                                 <Select style={ formItemStyle } placeholder="上下架状态" >
@@ -48,7 +49,7 @@ const Toolbar = function( props ){
                                     <Option value="2">下架</Option>
                                 </Select>
                             )}
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item>
                            <Button.Group >
