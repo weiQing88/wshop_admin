@@ -1,4 +1,10 @@
 import api from '@/util/api';
-export function fetData(){
-      return api.get('api/index')
+
+export default  {
+      fetOrder( p = {} ){
+          return api.get('api/admin/order', { params : p })
+      },
+      edit( p = {} ){
+        return api.post('api/admin/order/edit', p )
+      }
 }

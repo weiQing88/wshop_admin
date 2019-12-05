@@ -4,11 +4,16 @@ import { Drawer,Tabs, Table, Divider, Descriptions, Input    } from 'antd';
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 
-export default function({ dispatch, form, isEdited,  visible, loading  }){
+export default function({ dispatch, form, data, visible, loading  }){
        let onClose = () => {
-        dispatch({ type : 'orderlist/toggle', payload : {  key : 'orderInfoVisible', visible : false  } });
+             dispatch({ type : 'orderList/setState', payload : {  key : 'orderInfoVisible', value : false  } });
        }
-       let callback  = () => {}
+       let callback  = () => { }
+
+
+       console.log( 'data', data )
+
+
      return (
          <Drawer
                 title="订单详情"

@@ -9,11 +9,13 @@ import router from 'umi/router';
             goodsEditFormVisible : false,
             searchFormVisible : false,
             promotionFormVisible : false,
+            bulkEditVisible : false,
             isEdited : false,
+            bulkEditType : '',
             page : 0,
             limit : 10,
             total : 0,
-            tabsItems : [
+            tabsItem : [
                 { name : '全部商品',  count : 0, selected : true, type : 'all' },
                 { name : '上架商品',  count : 0, selected : false, type : 'on_sale'  },
                 { name : '下架商品',  count : 0, selected : false, type : 'not_sale'  },
@@ -42,52 +44,45 @@ import router from 'umi/router';
                  state.isEdited = payload ? '' : false;
                  return state;
             },
-            searchmodal( state, { payload } ){
-               state.searchFormVisible = payload;
-               return state;
-            },
 
           
        },
        
         effects : {
             *fetGoodsData( action, { put, call, select }  ){
-                let tabsItems = yield select( state => state.goods.tabsItems );
-                let res = yield call( services.fetGoods, action.payload );
+                let queryObject = util.deepCopy( action.payload );
+                   Object.keys( queryObject ).forEach( key => {  if( !util.isValid( queryObject[key] ) ) delete queryObject[key] });
+                 let res = yield call( services.fetGoods,  queryObject);
                   if( res.data.status_code == 200 ){
-                      let payload =  [
+                    let tabsItem = yield select( state => state.goods.tabsItem );
+                        tabsItem.forEach( item => { item.count = res.data[ item.type ] });
+                    let payload =  [
                                 {  key : 'dataSource', value : res.data.data },
                                 {  key : 'total', value : res.data.total },
+                                { key : 'tabsItem',  value : tabsItem }
                             ];
-                   
-                      tabsItems.forEach( item => {
-                             switch( item.type ){
-                                  case 'all' : item.count = res.data.all ;
-                                  break;
-                                  case 'on_sale' : item.count =  res.data.on_sale;
-                                  break;
-                                  case 'not_sale' :  item.count =  res.data.not_sale;
-                                  break;
-                                  case 'stock' :  item.count = res.data.stock;
-                                  break;
-                             }
-                      });
-                     
-                     if( action.payload && action.payload.page ) payload.push({ key : 'page', value : action.payload.page });
-                     if( action.payload && action.payload.limit ) payload.push({ key : 'limit', value : action.payload.limit });
-                      yield put({ type : 'setState', payload });
+                      if( action.payload ){
+                          let { page, limit } = action.payload;
+                          let query = util.getQuery(); 
+                               page && payload.push({ key : 'page', value : page });
+                               limit &&  payload.push({ key : 'limit', value : limit });
+                                // 重置地址栏
+                                Object.keys( action.payload || {} ).forEach( key => {
+                                    if(  action.payload[key] ){
+                                    query[key] = action.payload[key]; 
+                                    }else{
+                                    delete query[key]
+                                    }
+                            });
+                            router.push({  pathname : '/goods/', query });
+                      }else{  // 重置时，  payload => undefined
+                        let limit = yield select( state => state.goods.limit );
+                            payload.push({key : 'page', value : 1 });
+                            payload.push({key : 'limit', value : limit });
+                            router.push({ pathname : '/goods/' }); // 重置地址栏
+                      }
 
-                    // 设置url参数
-                    let query = util.getQuery();
-                    Object.keys( action.payload || {} ).forEach( key => {
-                          if(  action.payload[key] ){
-                             query[key] = action.payload[key]; 
-                          }else{
-                             delete query[key]
-                          }
-                    });
-                     router.push({  pathname : '/goods/', query, });
-                      console.log( 'query',query );
+                      yield put({ type : 'setState', payload });
                   }else{
                        message.error( res.data.message );
                   }
@@ -158,24 +153,33 @@ import router from 'umi/router';
 
             },
 
-            *searchGoodsData( action, { put, call } ){
-               let resp = yield call( services.searchGoods, action.payload )
-                  console.log( 'resp', resp )
-            },
+             *bulkedit( action, { put, call, select }){
+                    let res = yield call( services.bulkEditGoods, action.payload );
+                    if( res.data.status_code == 200 ){
+                        message.success( res.data.message );
+                         yield put({
+                                type : 'setState',
+                                payload : [
+                                {
+                                    key : 'bulkEditVisible',
+                                    value : false
+                                },{
+                                    key : 'bulkEditType',
+                                    value : '',
+                                },
+                                {
+                                    key : 'selectedRowKeys', 
+                                    value : [],
+                                }
+                             ]
+                        });
+                         let query = util.getQuery(); 
+                             yield put({ type : 'fetGoodsData', payload : query });
+                        }else{
+                            message.error( res.data.message )
+                        }   
+             }
 
-
-            *showADVSModal( action, effects ){
-
-                //   let categoryDataSource = yield select( state => state.category.dataSource );
-
-                    //  if( !util.isValid( categoryDataSource ) ){   { put, call, select }
-                     // 如何调用其他model的方法 ???? 【 除开 window.g_app._store 】
-                    //   }
-
-                      console.log( 'effects', effects )
-            
-
-            } 
 
             
         },

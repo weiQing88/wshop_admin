@@ -27,6 +27,10 @@ export default {
         return api.delete('api/admin/goods/delete', { params : p })
       },
 
+      bulkEditGoods( p = {} ){
+           return api.patch('api/admin/goods/bulkedit', p )
+      },
+
        fetCategory(  p = {}  ){
             return api.get('api/admin/goods/category', { params : p })
       },

@@ -11,13 +11,25 @@ const Toolbar = function( props ){
 
       useEffect(() =>{}, []);
 
-      const handleMenuEvent = e => {
-             props.onClick({ type : 'menuEvent', data : e })
-      }
+    //   const handleMenuEvent = e => {
+    //          props.onClick({ type : 'menuEvent', data : e })
+    //   }
 
       const handleButtonsEvent =  ( type ) => {
-           let bool = props.onClick({ type, visible : true  }); // true ==> 清空选项框
-           if( bool ){}
+        let values = form.getFieldsValue();
+            if( values.range_time ){
+                 let addTime = values.range_time[0].format('YYYY-MM-DD HH:mm:ss'),
+                    endTime = values.range_time[1].format('YYYY-MM-DD HH:mm:ss'),
+                    bool = Date.parse( values.add_time ) <  Date.parse( values.end_time ) ? true : false;
+                    values.add_time = bool ? addTime : endTime;
+                    values.end_time = bool ? endTime : addTime;;
+            }else{
+                values.add_time = undefined;
+                values.end_time = undefined;
+            }
+            delete  values.range_time;
+         let bool = props.onClick({ type, visible : true, data : values  }); 
+             bool && form.resetFields(); // true ==> 清空选项框
 
       }
 
@@ -25,23 +37,22 @@ const Toolbar = function( props ){
        return (
             <div className="toolbar-wrapper" >
                 <Form className="toolbar-form" layout="inline">
-
                         <Form.Item >
-                        {getFieldDecorator('order_number')(
+                        {getFieldDecorator('order_sn')(
                             <Input style={ formItemStyle }  placeholder="请输入订单号" />,
                         )}
                         </Form.Item>
 
                         <Form.Item >
-                        {getFieldDecorator('order_tel')(
+                        {getFieldDecorator('mobile')(
                             <Input style={ formItemStyle }  placeholder="收货手机号" />,
                         )}
                         </Form.Item>
 
 
                         <Form.Item >
-                        {getFieldDecorator('order_name')(
-                            <Input style={ formItemStyle }  placeholder="用户名、昵称、手机" />,
+                        {getFieldDecorator('consignee')(
+                            <Input style={ formItemStyle }  placeholder="用户名、昵称" />,
                         )}
                         </Form.Item>
 
@@ -49,38 +60,38 @@ const Toolbar = function( props ){
                         <Form.Item >
                             {getFieldDecorator('order_channel')(
                                 <Select style={ formItemStyle } placeholder="订单来源" >
-                                    <Option value="0">全部</Option>
-                                    <Option value="1">小程序</Option>
+                                    {/* <Option value="网站">网站</Option> */}
+                                    <Option value="小程序">小程序</Option>
                                 </Select>
                             )}
                         </Form.Item>
 
-
-                        
                         <Form.Item >
                             {getFieldDecorator('order_type')(
                                 <Select style={ formItemStyle } placeholder="订单类型" >
-                                    <Option value="0">普通订单</Option>
-                                    <Option value="1">拼团订单</Option>
+                                    <Option value="普通订单">普通订单</Option>
+                                    <Option value="拼团订单">拼团订单</Option>
                                 </Select>
                             )}
                         </Form.Item>
 
 
                          <Form.Item >
-                            {getFieldDecorator('range-time-picker')(
+                            {getFieldDecorator('range_time')(
                                 <RangePicker placeholder={['开始时间','结束时间']} showTime format="YYYY-MM-DD HH:mm:ss" />,
                             )}
                             </Form.Item>
 
-
                         <Form.Item>
-                         <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
+                           <Button.Group >
+                             <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
+                             <Button onClick={ handleButtonsEvent.bind(this, 'reset') } type="primary"> 重置 </Button>
+                          </Button.Group>
                         </Form.Item>
 
 
                         <Form.Item>
-                          <Button onClick={ handleButtonsEvent.bind(this, 'add') } type="primary"> 批量取消 </Button>
+                          <Button onClick={ handleButtonsEvent.bind(this, 'cancel') } type="primary"> 批量取消 </Button>
                         </Form.Item>
 
 

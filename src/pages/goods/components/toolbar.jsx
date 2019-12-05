@@ -4,16 +4,19 @@ const { Option } = Select;
 
 
 const Toolbar = function( props ){
-      const { form } = props;
+      const { form, category } = props;
       const { getFieldDecorator } = form
-      const formItemStyle = { width : 200 };
+      const formItemStyle = { width : 180 };
 
       useEffect(() =>{}, []);
 
+      // Menu 事件处理函数
       const handleMenuEvent = e => {
              props.onClick({ type : 'menuEvent', data : e })
       }
 
+
+      // Button 事件处理函数
       const handleButtonsEvent =  ( type ) => {
            let bool = props.onClick({ type, visible : true, data : form.getFieldsValue()  }); 
                bool && form.resetFields(); // true ==> 清空选项框
@@ -21,11 +24,11 @@ const Toolbar = function( props ){
 
       const menu = (
         <Menu onClick={ handleMenuEvent }>
-          <Menu.Item key="1">修改价格</Menu.Item>
-          <Menu.Item key="2">调整库存</Menu.Item>
-          <Menu.Item key="3">批量上架</Menu.Item>
-          <Menu.Item key="4">批量下架</Menu.Item>
-          <Menu.Item key="5">删除</Menu.Item>
+          <Menu.Item key="price">修改价格</Menu.Item>
+          <Menu.Item key="stock">调整库存</Menu.Item>
+          <Menu.Item key="on_sale">批量上架</Menu.Item>
+          <Menu.Item key="not_sale">批量下架</Menu.Item>
+          <Menu.Item key="delete">删除</Menu.Item>
           {/* <Menu.Item key="6">打标签</Menu.Item>
           <Menu.Item key="7">去标签</Menu.Item> */}
         </Menu>
@@ -40,17 +43,26 @@ const Toolbar = function( props ){
                             <Input style={ formItemStyle }  placeholder="请输入商品名称" />,
                         )}
                         </Form.Item>
-{/*                         
-                        <Form.Item >
-                            {getFieldDecorator('is_on_sale')(
-                                <Select style={ formItemStyle } placeholder="上下架状态" >
-                                    <Option value="0">全部</Option>
-                                    <Option value="1">上架</Option>
-                                    <Option value="2">下架</Option>
-                                </Select>
-                            )}
-                        </Form.Item> */}
 
+
+                        <Form.Item>
+                              {getFieldDecorator('category_id')( 
+                                 <Select style={ formItemStyle } allowClear placeholder="商品类型">
+                                    {
+                                      category.map(( item,index )=>( 
+                                         <Option key={ index } value={ item.category_id }> { item.category_name } </Option> 
+                                         ))
+                                    }
+                              </Select>)}
+                        </Form.Item>
+
+
+                        <Form.Item >
+                        {getFieldDecorator('goods_sn')(
+                           <Input style={ formItemStyle } placeholder="商品编号" />)}
+                        </Form.Item>
+
+                        
                         <Form.Item>
                            <Button.Group >
                              <Button onClick={ handleButtonsEvent.bind(this, 'search') } type="primary"> 搜索</Button>
@@ -58,9 +70,9 @@ const Toolbar = function( props ){
                           </Button.Group>
                         </Form.Item>
 
-                        <Form.Item>
+                        {/* <Form.Item>
                         <Button onClick={ handleButtonsEvent.bind(this, 'searchModal') } type="primary"> 高级搜索</Button>
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item >
                             <Dropdown overlay={menu}>

@@ -128,7 +128,6 @@ const { Option } = Select;
      }, [ props.visible ]);
 
 
-  //  console.log('initData---', initData)
 
      return (
         <Drawer
@@ -136,7 +135,7 @@ const { Option } = Select;
           width={ 760 }
           onClose={ handleCancel }
           visible={ visible }
-        //  maskClosable={ false }
+          maskClosable={ true }
         >
         <Form layout="vertical" >
             <Form.Item label="商品类型">
@@ -165,11 +164,11 @@ const { Option } = Select;
              </Form.Item>
 
 
-             <Form.Item label="商品编号">
+             <Form.Item label="商品货号/编号">
                   {getFieldDecorator('goods_sn', {
                    initialValue : initData.goods_sn,
-                    rules: [{ required: false, message: '请输入商品编号' }],
-                  })( <Input style={ formItemStyle } placeholder="编号" />)}
+                    rules: [{ required: false, message: '请输入货号/编号号' }],
+                  })( <Input style={ formItemStyle } placeholder="货号/编号" />)}
              </Form.Item>
 
 
@@ -202,6 +201,7 @@ const { Option } = Select;
                     rules: [{ required: false, message: '请输入商品折扣价' }],
                   })( <InputNumber min={0} style={ formItemStyle } placeholder="折扣价" />)}
              </Form.Item>
+
 
              <Form.Item label="商品关键词">
                   {getFieldDecorator('keywords', {

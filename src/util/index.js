@@ -429,7 +429,7 @@ isFullScreen () {
 
 deepCopy( obj ){
   let newObject = {};
- if( Array.isArray( obj ) ) return newObject;
+ if( Array.isArray( obj ) || !this.isValid( obj ) ) return newObject;
   Object.keys(obj).forEach( key => {
       if( typeof obj[key] == 'object' && obj[key] !== null ){
            if( obj[key] instanceof Array ){
@@ -459,7 +459,7 @@ deepCopy( obj ){
 
 deepCopyArray( arr ){
     var newArry = [];
-   if( Array.isArray( arr ) ){
+   if( Array.isArray( arr ) || !this.isValid( arr ) ){
       arr.forEach( item => {
           if( Array.isArray( item ) ){
               newArry.push( this.deepCopyArray( item ) ); 

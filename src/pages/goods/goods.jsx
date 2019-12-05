@@ -5,8 +5,8 @@ import Toolbar from './components/toolbar';
 import { ToolbarTabs, TableSrollStatus } from '@/components/widgets';
 import GoodsEditForm from './components/edit_goods';
 import GoodsPromotion from './components/edit_goods_promotion';
-import AdvancedSearch from './components/advancedSearch';
-import { Table, Switch, Popconfirm, message   } from 'antd';
+import BulkEditModal from './components/bulk_edit';
+import { Table, Switch, Popconfirm, message, Modal  } from 'antd';
 import util from '@/util';
 
  const Goods = props => {
@@ -20,46 +20,37 @@ import util from '@/util';
          categoryDataSource, 
          dataSource,
          searchFormVisible, 
+         bulkEditVisible,
          limit, 
          loading, 
          total,
          history,
-         tabsItems,
+         tabsItem,
          selectedRowKeys,
+         bulkEditType,
          page } = props;
 
 
       // Table Scroll Y 
       let y = TableSrollStatus( 217 );
 
-
      // 分页处理函数
      let onTableChange = (page, pageSize) => {
-              dispatch({
-                  type : 'goods/fetGoodsData',
-                  payload : { page, limit : pageSize }
-              })
-        };
+       let query = util.getQuery();
+          query.page = page;
+          query.limit = pageSize;
+          dispatch({ type : 'goods/fetGoodsData', payload : query })
+       };
 
 
      // 分页页码处理函数
       let onTableShowSizeChange = (current, size) => {
-              dispatch({
-                  type : 'goods/fetGoodsData',
-                  payload : { page :current , limit : size }
-              })
+             let query = util.getQuery();
+                  query.page = current;
+                  query.limit = size;
+              dispatch({ type : 'goods/fetGoodsData', payload : query })
         };
 
-
-     // 高级搜索
-     let  handleAdSearch = ( arg ) => {
-          switch( arg.type ){
-              case 'cancel' : dispatch({  type : 'goods/searchmodal', payload : false  });
-              break;
-              case 'ok' : dispatch({  type : 'goods/searchmodal', payload : false  });
-              break;
-          }
-    }
 
 
     // 表单单元事件  
@@ -101,44 +92,27 @@ import util from '@/util';
 
 
 
-
    // 工具栏处理函数
    let  handleToolbarEvent = ( arg ) => {
             if( loading ) return;
             let { type, visible, data } = arg;
-            if( type == 'search' ){
-              let items = util.deepCopyArray( tabsItems ),
+            if( type == 'search' ){ // 搜索
+               let items = util.deepCopyArray( tabsItem ),
                    query = util.getQuery(),
-                    { data } = arg;
-                    if( util.isValid( data.goods_name ) ){ 
-                          query.goods_name = data.goods_name
-                     }else{
-                         query.goods_name = undefined;
-                     }
+                   { data } = arg;
+                    Object.keys( data ).forEach( key =>{  query[key] = data[key] });
                      query.page = 1;
                      query.limit = limit;
-                     query.type = 'all';
-                     items.forEach( itm => {
-                          if( itm.name == '全部商品' ){
-                              itm.selected = true;
-                          }else{
-                              itm.selected = false;
-                          }
-                    });
-                     dispatch({ type : 'goods/setState', payload : { key : 'tabsItems', value : items } });
-
-                     console.log(' query------- ', query );
-
-
-                  // dispatch({  type : 'goods/fetGoodsData', payload : });
-
-
-            }else if( type == 'reset'  ){
-                    dispatch({
-                      type : 'goods/fetGoodsData',
-                      payload : undefined,
-                   });
-                return true;
+                     query.type = undefined;
+                     items.forEach( itm => { itm.selected = itm.name == '全部商品' ? true : false  });
+                     dispatch({ type : 'goods/setState', payload : { key : 'tabsItem', value : items } });
+                     dispatch({  type : 'goods/fetGoodsData', payload : query });
+            }else if( type == 'reset' ){  // 重置搜索框
+                  let items = util.deepCopyArray( tabsItem );
+                      items.forEach( itm => { itm.selected = itm.name == '全部商品' ? true : false  });
+                  dispatch({ type : 'goods/setState',  payload : { key : 'tabsItem', value : items } });
+                  dispatch({ type : 'goods/fetGoodsData', payload : undefined });
+                  return true; // 返回true,清空搜索栏
             } else if( type == 'add' ){
                   dispatch({ 
                         type : 'goods/setState', 
@@ -148,18 +122,47 @@ import util from '@/util';
                                 {  key : 'goodsFormInitialData', value : {} }
                           ]  
                     });
-                 dispatch({   type : 'category/fetCategory'});
-
             }else if( type == 'menuEvent' ){
+                 if( selectedRowKeys.length ){
+                      let { key } = arg.data; 
+                      if( key == 'price' || key == 'stock' ){
+                              dispatch({
+                                type : 'goods/setState',
+                                payload : [
+                                  {
+                                      key : 'bulkEditVisible',
+                                      value : true
+                                  },{
+                                    key : 'bulkEditType',
+                                    value : key,
+                                  }
+                                ]
+                            })
+                      }else if( key == 'on_sale' ||  key == 'not_sale' ){
+                            let param = selectedRowKeys.map( id =>({ id, on_sale :  key == 'on_sale' ? '1' : '0' }));
+                            dispatch({ type : 'goods/bulkedit', payload : { goods : param, type : 'update' } });
+                      }else if( key == 'delete'){
+                            Modal.confirm({
+                              title: '确定要删除?',
+                              content: '',
+                              okText: '是',
+                              okType: 'danger',
+                              cancelText: '否',
+                              onOk : () => {
+                                    dispatch({ type : 'goods/bulkedit', payload : { goods : selectedRowKeys, type : 'delete' } });
+                              },
+                              onCancel() {},
+                            });
+                      }
 
-              console.log();
-
-
-            }else if( type == 'searchModal' ){
-                 // console.log( 'categoryDataSource', categoryDataSource )
-                 dispatch({  type : 'goods/showADVSModal' });
-            }else if( type == 'resetFields' ){  // 重置搜索框
-                 return true
+                 }else{
+                     message.warning('请选择商品')
+                 }
+            }else if( type == 'searchModal' ){ // 预留后期搜索项比较多的时
+                  // dispatch({ 
+                  //     type : 'goods/setState', 
+                  //     payload : { key : 'searchFormVisible',value : true }
+                  //   });
             }
     }
 
@@ -177,19 +180,14 @@ import util from '@/util';
    }
 
 
-   let  handleTabEvent = ({ name, type }) => {
-         let items = util.deepCopyArray( tabsItems ),
+   let  handleTabsEvent = ({ name, type }) => {
+         if( loading ) return;
+         let items = util.deepCopyArray( tabsItem ),
              query = util.getQuery();
-             items.forEach( itm => {
-                  if( itm.name == name ){
-                      itm.selected = true;
-                  }else{
-                      itm.selected = false;
-                  }
-            });
+             items.forEach( itm => { itm.selected = itm.type == type ? true : false  });
           dispatch({
               type : 'goods/setState',
-              payload : { key : 'tabsItems', value : items }
+              payload : { key : 'tabsItem', value : items }
           });
           query.type = type == 'all' ? undefined : type;
           query.page = 1;
@@ -216,20 +214,19 @@ import util from '@/util';
      useEffect(() =>{
         // 清空参数
        if( history.location.search ) history.push('/goods\/');
+       // 获取商品类型数据
+        dispatch({   type : 'category/fetCategory'});
        // 初始化获取数据
-       dispatch({
-          type : 'goods/fetGoodsData',
-          payload : undefined,
-       });
-      console.log(' goods 仅仅需要执行一次')
+       dispatch({ type : 'goods/fetGoodsData', payload : undefined  });
+        console.log(' goods 仅仅需要执行一次')
      }, []);
 
       return (
          <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
-               <Toolbar onClick={ handleToolbarEvent  } />
+               <Toolbar category={ categoryDataSource } onClick={ handleToolbarEvent  } />
                 <ToolbarTabs 
-                   items={ tabsItems  }
-                   onClick={ handleTabEvent }
+                   items={ tabsItem  }
+                   onClick={ handleTabsEvent }
                     />
                <Table  
                   rowSelection={{
@@ -382,11 +379,14 @@ import util from '@/util';
                  rowKey="id"
              />
 
-            <AdvancedSearch 
-                    visible={ searchFormVisible }  
-                    onClick={ handleAdSearch }
+         {/* <AdvancedSearch  visible={ searchFormVisible }   onClick={ handleAdSearch } />  高级搜索 */}
 
-               />
+            <BulkEditModal
+                    dispatch={ dispatch }
+                    loading={ loading }
+                    data={{ selected : selectedRowKeys, type : bulkEditType }}
+                    visible={ bulkEditVisible }
+              />
                 
            <GoodsEditForm
                   visible={ goodsEditFormVisible }
@@ -414,8 +414,10 @@ function mapStateToProps(state) {
   const { goodsEditFormVisible,goodsFormInitialData, 
         promotionInitialData, promotionFormVisible, 
         searchFormVisible, 
-        tabsItems,
+        tabsItem,
         selectedRowKeys,
+        bulkEditVisible,
+        bulkEditType,
         isEdited, dataSource, limit, total, page } = state.goods;
   const { dataSource : categoryDataSource } = state.category;
 
@@ -427,7 +429,9 @@ function mapStateToProps(state) {
         categoryDataSource,
         goodsFormInitialData,
         selectedRowKeys,
-        tabsItems,
+        bulkEditVisible,
+        bulkEditType,
+        tabsItem,
         isEdited,
         page,
         limit,

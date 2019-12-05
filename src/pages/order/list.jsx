@@ -1,99 +1,167 @@
 import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
-
 import AppLayout from '@/components/app_layout';
-
+import { ToolbarTabs, TableSrollStatus } from '@/components/widgets';
 import Toolbar from './components/toolbar';
-import ToolbarTabs from './components/tabs';
 import EditOrder from './components/edit_order';
 import OrderInfo from './components/order_info';
+import util from '@/util';
+import { Table, message, Modal, Popconfirm  } from 'antd';
 
 
-import { Tabs, Card, Icon, Badge, Table, Divider  } from 'antd';
+const OrderList = ({ 
+         dataSource,
+         orderInfo,
+         dispatch,
+         limit,  
+         orderDetailVisible, 
+         editOrderVisible, 
+         loading,  
+         total, 
+         history,
+         tabsItem,
+         selectedRowKeys,
+         orderDetail,
+         page }) => {
 
-const data = [
-     {
-        id : 123,
-        order_sn : 12343 ,
-        add_time : '2019-11-05 13:41:20' ,
-        order_status : 0,
-        consignee : '老张',
-        mobile : 13641439075,
-        address : '某某城中村',
-        pay_status : 1,
-        shipping_status : 1,
-        order_price : 123,
-     }
-];
 
-const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loading,  total, page }) => {
+        // Table Scroll Y 
+      let y = TableSrollStatus( 217 );
 
-     let [ tHeight, setTHeight ] = useState( '100%' );
 
-     let onResize = () => {
-            setTimeout(() => {
-                let toolbarHeight = 51, // Toolbar 高度
-                tabgsHeight = 45; //  ToolbarTabs 高度
-                if( window.appLayoutHeigght ){
-                    let _tHeight = window.appLayoutHeigght - ( toolbarHeight + tabgsHeight );
-                    setTHeight( _tHeight );
-                }
-            },50)       
+     let filterStateCode = ( index, arr ) => {
+           let indx = Number( index );
+           if( typeof indx != 'number' ) return arr[0];
+           return arr[indx]
      }
 
 
-    let handleToolbarEvent = () => {}
+      
+    let handleToolbarEvent = ( arg ) => {
+          if( loading ) return;
+           let { type, visible, data } = arg;
+            if( type == 'search' ){
+              let items = util.deepCopyArray( tabsItem ),
+                  query = util.getQuery();
+                  items.forEach( itm => { itm.selected = itm.type == 'all' ? true : false  });
+                  Object.keys( data ).forEach( key =>{ query[key] = data[key] });
+                  query.page = 1;
+                  query.limit = limit;
+                  query.type = undefined;
+                  dispatch({ type : 'orderList/setState',  payload : { key : 'tabsItem', value : items } });
+                  dispatch({type : 'orderList/fetOrder', payload : query  });
 
-    let onTableChange = () => {}
+            }else if( type == 'reset' ){
+              let items = util.deepCopyArray( tabsItem );
+                 items.forEach( itm => { itm.selected = itm.type == 'all' ? true : false  });
+                 dispatch({ type : 'orderList/setState',  payload : { key : 'tabsItem', value : items } });
+                 dispatch({type : 'orderList/fetOrder', payload : { page : 1, limit } });
+              return true; // 返回true,清空搜索栏
+            }else if(  type == 'cancel' ){
+                    if( selectedRowKeys.length ){
+                          /**
+                           *  取消订单，应先与购买方协商，才能做取消操作。
+                           */
 
-    let  onTableShowSizeChange = () => {}
+                    }else{
+                      message.warning('请选择订单')
+                    }
+            }
+         console.log('arg---', arg)
+
+    }
+
+    
+
+  let handleTabsEvent = ({ name, type }) => {
+      if( loading ) return;
+         console.log( 'arg', type )
+         let items = util.deepCopyArray( tabsItem ),
+             query = util.getQuery();
+             items.forEach( itm => { itm.selected = itm.type == type ? true : false  });
+          dispatch({ type : 'orderList/setState',  payload : { key : 'tabsItem', value : items } });
+          query.type = type == 'all' ? undefined : type;
+          query.page = 1;
+          query.limit = limit;
+          dispatch({type : 'orderList/fetOrder', payload : query  });
+   }
 
 
-    let handleTableCellEvent = ( arg ) => {
-           switch( arg.type ){
-               case 'edit' :  dispatch({ type : 'orderlist/toggle', payload : {  key : 'editOrderVisible', visible : true  } });
-               break;
-               case 'view' : dispatch({ type : 'orderlist/toggle', payload : {  key : 'orderInfoVisible', visible : true  } });
-               break;
-            //    case 'edit' : 1;
-            //    break;
-           }
+
+     // 分页处理函数
+     let onTableChange = (page, pageSize) => {
+       if( loading ) return;
+      let query = util.getQuery();
+         query.page = page;
+         query.limit = pageSize;
+         dispatch({ type : 'orderList/fetOrder', payload : query })
+      };
+
+
+    // 分页页码处理函数
+     let onTableShowSizeChange = (current, size) => {
+          if( loading ) return;
+            let query = util.getQuery();
+                 query.page = current;
+                 query.limit = size;
+             dispatch({ type : 'orderList/fetOrder', payload : query })
+       };
+
+
+      
+    let handleTableCellEvent = ({ type, data }) => {
+          if( loading ) return;
+          if( type == 'edit' ){
+              dispatch({ 
+                type : 'orderList/setState',
+                payload : [ {  key : 'editOrderVisible', value : true }, { key : 'orderInfo', value : data } ]
+               });
+          }else if( type == 'view' ){
+              // 获取多个表单的信息
+              dispatch({ type : 'orderList/setState', payload : {  key : 'orderDetailVisible', value : true  } });
+          }
+
     }
 
 
+       // 选择table 项
+   let handleSelectChange = selectedRowKeys => {
+      dispatch({
+          type : 'orderList/setState',
+          payload : { key : 'selectedRowKeys', value : selectedRowKeys }
+      })
+};
+
+
+
     useEffect(() =>{
+         // 清空参数
+       if( history.location.search ) history.push('/order\/');
+        dispatch({ type : 'orderList/fetOrder', payload : undefined });
+        console.log(' orderList 仅仅需要执行一次')
 
-    //     onResize();
-    //     window.addEventListener('resize', onResize );
-    //    return function(){
-    //          window.removeEventListener('resize', onResize )
-    //    }
-
-     }, [ tHeight ]);
+     }, []);
 
 
-   
 
      return (
         <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
             <Toolbar onClick={ handleToolbarEvent  } />
-            <ToolbarTabs onClick={ handleToolbarEvent } />  
+            <ToolbarTabs 
+                 items={ tabsItem  }
+                 onClick={ handleTabsEvent }
+             />  
 
             <Table  
                  bordered 
+                 expandedRowRender={record => <p>{record.address}</p>}
                  rowSelection={{
                     columnWidth : 50,
-                    selectedRowKeys : [],
-                    onChange: (selectedRowKeys, selectedRows) => {
-                           console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-                    }
+                    selectedRowKeys,
+                    onChange: handleSelectChange
                    }}
                  style={{  backgroundColor : '#fff' }}
-                 scroll={{ 
-                     //  x : '100%',
-                     // y :  tHeight,
-                     // scrollToFirstRowOnChange : true,
-                    }}
+                 scroll={{ y }}
                  pagination={{
                   pageSizeOptions: ['10','20', '30', '50'],
                   current: Number(page), 
@@ -124,11 +192,11 @@ const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loadi
 
                       {
                         title: '订单状态',
-                        dataIndex: 'order_status ',
-                        key: 'order_status ',
+                        dataIndex: 'order_status',
+                        key: 'order_status',
                         align : 'center',
                         render : ( text, record ) => (
-                             <span style={{ color : 'red' }}>  0未确认 </span>
+                             <span style={{ color : 'red' }}> { filterStateCode(text, [ '未确认','确认','已取消','无效','退货'])} </span>
                         )
                       },
 
@@ -162,7 +230,7 @@ const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loadi
                         key: 'pay_status',
                         align : 'center',
                         render : ( text, record ) => (
-                            <span style={{ color : 'red' }}>   0未付款 </span>
+                            <span style={{ color : 'red' }}>  { filterStateCode(text, [ '未付款', '付款中', '已付款'])}  </span>
                        )
                       
                       },
@@ -174,7 +242,7 @@ const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loadi
                         key: 'shipping_status',
                         align : 'center',
                         render : ( text, record ) => (
-                            <span style={{ color : 'red' }}>  0未发货 </span>
+                            <span style={{ color : 'red' }}>  { filterStateCode(text, [ '未发货','已发货','已收货','退货'])}</span>
                        )
                       },
 
@@ -192,27 +260,31 @@ const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loadi
                         render: (text, record) => (
                           <span className="table-action-buttons">
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'view', data: record }) } type="button"> 查看 </button>
-                              <button onClick={ handleTableCellEvent.bind(this, { type : 'cancel', data: record }) }  type="button"> 取消 </button>
+                              <Popconfirm title="已与购买方协商取消订单？" onConfirm={ handleTableCellEvent.bind(this, { type : 'cancel', data: record }) } okText="是" cancelText="否" >
+                                  <button type="button"> 取消 </button>
+                               </Popconfirm>
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'edit', data: record }) }  type="button"> 编辑 </button>
                           </span>
                         ),
                       },
                   
                   ]} 
-                 dataSource={ data }
+                 dataSource={ dataSource }
                  rowKey="id"
              />
 
              <EditOrder
-                 data={ {} }
+                 data={ orderInfo }
                  visible={ editOrderVisible }
                  dispatch={ dispatch }
+                 loading={ loading }
               />
 
             <OrderInfo
-                data={ {} }
-                visible={ orderInfoVisible }
+                data={ orderDetail }
+                visible={ orderDetailVisible }
                 dispatch={ dispatch }
+                loading={ loading }
              />
 
         </AppLayout>
@@ -221,14 +293,19 @@ const OrderList = ({ dispatch, limit,  orderInfoVisible, editOrderVisible, loadi
 
 
 function mapStateToProps(state) {
-    const {  editOrderVisible, orderInfoVisible, limit, total, page } = state.orderlist;
+    const {  editOrderVisible,selectedRowKeys, orderDetailVisible, limit, total, page, dataSource,orderDetail, orderInfo,tabsItem  } = state.orderList;
     return {
           editOrderVisible,
-          orderInfoVisible,
+          orderDetailVisible,
+          selectedRowKeys,
+          dataSource,
+          orderInfo,
+          tabsItem,
+          orderDetail,
           page,
           limit,
           total,
-          loading: state.loading.models.orderlist,
+          loading: state.loading.models.orderList,
     };
   
   }
