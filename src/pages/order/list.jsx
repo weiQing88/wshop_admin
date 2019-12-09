@@ -5,6 +5,7 @@ import { ToolbarTabs, TableSrollStatus } from '@/components/widgets';
 import Toolbar from './components/toolbar';
 import EditOrder from './components/edit_order';
 import OrderInfo from './components/order_info';
+import Booking from './components/booking';
 import util from '@/util';
 import { Table, message, Modal, Popconfirm  } from 'antd';
 
@@ -16,6 +17,7 @@ const OrderList = ({
          limit,  
          orderDetailVisible, 
          editOrderVisible, 
+         bookingVisible,
          loading,  
          total, 
          history,
@@ -25,18 +27,16 @@ const OrderList = ({
          page }) => {
 
 
-        // Table Scroll Y 
+      // Table Scroll Y 
       let y = TableSrollStatus( 217 );
-
-
-     let filterStateCode = ( index, arr ) => {
-           let indx = Number( index );
-           if( typeof indx != 'number' ) return arr[0];
-           return arr[indx]
-     }
-
-
       
+      let filterStateCode = ( index, arr ) => {
+            let indx = Number( index );
+            if( typeof indx != 'number' ) return arr[0];
+            return arr[indx]
+      }
+
+
     let handleToolbarEvent = ( arg ) => {
           if( loading ) return;
            let { type, visible, data } = arg;
@@ -117,8 +117,19 @@ const OrderList = ({
                 payload : [ {  key : 'editOrderVisible', value : true }, { key : 'orderInfo', value : data } ]
                });
           }else if( type == 'view' ){
+
+             //  console.log('data', data)
+
+               dispatch({
+                   type : 'orderList/detail',
+                   payload : {  order_id : data.order_id, id : data.id }
+               })
+
+
               // 获取多个表单的信息
-              dispatch({ type : 'orderList/setState', payload : {  key : 'orderDetailVisible', value : true  } });
+            //  dispatch({ type : 'orderList/setState', payload : {  key : 'orderDetailVisible', value : true  } });
+          }else if( type == 'booking' ){
+                dispatch({  type : 'orderList/bookingModal', payload : { order_id : data.order_id, id : data.id } })
           }
 
     }
@@ -230,7 +241,7 @@ const OrderList = ({
                         key: 'pay_status',
                         align : 'center',
                         render : ( text, record ) => (
-                            <span style={{ color : 'red' }}>  { filterStateCode(text, [ '未付款', '付款中', '已付款'])}  </span>
+                            <span style={{ color : 'red'}}>  { filterStateCode(text, [ '未付款', '付款中', '已付款'])}  </span>
                        )
                       
                       },
@@ -242,7 +253,9 @@ const OrderList = ({
                         key: 'shipping_status',
                         align : 'center',
                         render : ( text, record ) => (
-                            <span style={{ color : 'red' }}>  { filterStateCode(text, [ '未发货','已发货','已收货','退货'])}</span>
+                            <span style={{ color :  record.shipping_status == '1' ? '#2f54eb' : 'red' }}> 
+                             { filterStateCode(text, [ '未发货','已发货','已收货','退货'])}
+                             </span>
                        )
                       },
 
@@ -263,6 +276,16 @@ const OrderList = ({
                               <Popconfirm title="已与购买方协商取消订单？" onConfirm={ handleTableCellEvent.bind(this, { type : 'cancel', data: record }) } okText="是" cancelText="否" >
                                   <button type="button"> 取消 </button>
                                </Popconfirm>
+                               {
+                                 record.shipping_status == '0' ? 
+                                  ( <button onClick={ handleTableCellEvent.bind(this, { type : 'booking', data: record }) }  type="button"> 预约 </button>) 
+                                  : null
+                               }
+                               {
+                                 record.shipping_status == '1' ? 
+                                    ( <button onClick={ handleTableCellEvent.bind(this, { type : 'rescission', data: record }) }  type="button"> 解约 </button>)
+                                    : null
+                               }
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'edit', data: record }) }  type="button"> 编辑 </button>
                           </span>
                         ),
@@ -272,6 +295,13 @@ const OrderList = ({
                  dataSource={ dataSource }
                  rowKey="id"
              />
+
+             <Booking
+                    visible={ bookingVisible }
+                    dispatch={ dispatch }
+                    loading={ loading }
+                    data={ orderInfo }
+               />
 
              <EditOrder
                  data={ orderInfo }
@@ -293,10 +323,14 @@ const OrderList = ({
 
 
 function mapStateToProps(state) {
-    const {  editOrderVisible,selectedRowKeys, orderDetailVisible, limit, total, page, dataSource,orderDetail, orderInfo,tabsItem  } = state.orderList;
+    const {  editOrderVisible,selectedRowKeys, 
+        orderDetailVisible, limit, total, page, 
+        dataSource,orderDetail, 
+        orderInfo,tabsItem, bookingVisible  } = state.orderList;
     return {
           editOrderVisible,
           orderDetailVisible,
+          bookingVisible,
           selectedRowKeys,
           dataSource,
           orderInfo,

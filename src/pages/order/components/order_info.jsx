@@ -1,18 +1,62 @@
 import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
-import { Drawer,Tabs, Table, Divider, Descriptions, Input    } from 'antd';
+import { Drawer,Tabs, Table, Divider, Descriptions, Input, Button    } from 'antd';
+import util from '@/util';
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 
-export default function({ dispatch, form, data, visible, loading  }){
+export default props => {
+       let { dispatch, form, data, loading  } = props;
+       let [ visible, setVisible ] = useState( false );
+       let [ txt, setTxt ] = useState('');
+
        let onClose = () => {
-             dispatch({ type : 'orderList/setState', payload : {  key : 'orderInfoVisible', value : false  } });
+             dispatch({ type : 'orderList/setState', payload : {  key : 'orderDetailVisible', value : false  } });
        }
        let callback  = () => { }
 
+       useEffect(() =>{ 
+        if( props.visible && visible == false ){
+               console.log( ' order_info 打开' )
+              setVisible( true );
+        }
+        if( props.visible == false && visible ){
+               console.log( ' order_info 关闭' )
+              // form.resetFields();
+               setVisible( false );
+        }
+    }, [ props.visible ]);
 
-       console.log( 'data', data )
 
+
+    let { basic = {}, note, goodsInfo, payment, delivery } = data;
+
+    let handleStatus = ( index, arr ) => {
+          if( !util.isValid( index ) ) return '';
+          return arr[index];
+       }
+
+    let handleAddress = ( obj ) => {
+           let {province = '',city= '',district= '',address= ''} = obj;
+            return province + city + district + address
+    }
+
+   
+let submitNote = () => {
+      if( loading || util.isValid( basic ) == false ) return;
+      let value =  document.querySelector('.orderInfo_textArea').value;
+      dispatch({
+        type : 'orderList/editNote', 
+        payload : { id : basic.id, note : value }
+      })
+     // console.log( 'value', value)
+}
+
+
+
+
+    
+       console.log( 'Drawer  data', data )
 
      return (
          <Drawer
@@ -25,29 +69,29 @@ export default function({ dispatch, form, data, visible, loading  }){
                     <TabPane tab="基本信息" key="1">
                          <Divider orientation="left"> 订单信息 </Divider>
                          <Descriptions title="">
-                            <Descriptions.Item label="订单号"> 15729324804082 </Descriptions.Item>
-                            <Descriptions.Item label="订单总金额"> ￥123.00元 </Descriptions.Item>
-                            <Descriptions.Item label="支付状态"> 已付款  </Descriptions.Item>
-                            <Descriptions.Item label="发货状态"> 已发货 </Descriptions.Item>
-                            <Descriptions.Item label="订单状态"> 正常 </Descriptions.Item>
-                            <Descriptions.Item label="下单来源"> H5页面 </Descriptions.Item>
-                            <Descriptions.Item label="下单时间"> 2019-11-05 13:41:20 </Descriptions.Item>
-                            <Descriptions.Item label="收货状态"> 未确认收货 </Descriptions.Item>
+                            <Descriptions.Item label="订单号"> { basic.order_sn } </Descriptions.Item>
+                            <Descriptions.Item label="订单总金额"> ￥{ basic.order_price }元 </Descriptions.Item>
+                            <Descriptions.Item label="支付状态"> { handleStatus( basic.pay_status, ['未付款', '付款中', '已付款']) }  </Descriptions.Item>
+                            <Descriptions.Item label="发/收货状态"> { handleStatus( basic.shipping_status, [ '未发货', '已发货', '已收货', '退货' ]) } </Descriptions.Item>
+                            <Descriptions.Item label="订单状态"> { handleStatus( basic.order_status, [ '未确认', '确认', '已取消', '无效', '退货' ]) } </Descriptions.Item>
+                            <Descriptions.Item label="下单来源"> { basic.order_channel } </Descriptions.Item>
+                            <Descriptions.Item label="下单时间"> { basic.add_time }</Descriptions.Item>
+                            {/* <Descriptions.Item label="收货状态"> { handleStatus( basic.shipping_status, [ '未确认', '确认', '已取消', '无效', '退货' ]) } </Descriptions.Item> */}
                         </Descriptions>
 
                          <Divider orientation="left"> 收货人信息 </Divider>
                             <Descriptions title="">
-                                <Descriptions.Item label="收货时间"> 未收货 </Descriptions.Item>
-                                <Descriptions.Item label="收货人姓名"> 测试收货 </Descriptions.Item>
-                                <Descriptions.Item label="收货人电话"> 13000000000 </Descriptions.Item>
-                                <Descriptions.Item label="收货地址">河北省 秦皇岛市 山海关区 - 测试地址  </Descriptions.Item>
+                                <Descriptions.Item label="收货时间"> { basic.confirm_time } </Descriptions.Item>
+                                <Descriptions.Item label="收货人姓名"> { basic.consignee } </Descriptions.Item>
+                                <Descriptions.Item label="收货人电话"> { basic.mobile  } </Descriptions.Item>
+                                <Descriptions.Item label="收货地址">{ handleAddress  (basic )  }</Descriptions.Item>
                             </Descriptions>
 
 
 
                          <Divider orientation="left"> 买家备注 </Divider>
                              <Descriptions title="">
-                                <Descriptions.Item label="买家备注"> ..... </Descriptions.Item>
+                                <Descriptions.Item label="买家备注"> { basic.postscript }</Descriptions.Item>
                             </Descriptions>
 
 
@@ -62,56 +106,60 @@ export default function({ dispatch, form, data, visible, loading  }){
                            columns={[
                                 {
                                     title: '商品名称',
-                                    dataIndex: 'name',
-                                    key: 'name',
+                                    dataIndex: 'goods_name',
+                                    key: 'goods_name',
                                     align : 'center',
                                 },
                                 {
                                     title: '商品单价',
-                                    dataIndex: 'price',
-                                    key: 'price',
+                                    dataIndex: 'shop_price',
+                                    key: 'shop_price',
                                     align : 'center',
                                 }, {
                                     title: '购买数量',
-                                    dataIndex: 'total',
-                                    key: 'total',
+                                    dataIndex: 'goods_number',
+                                    key: 'goods_number',
                                     align : 'center',
                                 },
                                 {
-                                    title: '商品总价',
+                                    title: '商品总价/元',
                                     dataIndex: 'sum',
-                                    key: 'sum',
+                                    key: 'id',
                                     align : 'center',
+                                    render : (text,record ) => ( record.shop_price * record.goods_number )
                                 },
                                 {
                                     title: '商品编码',
-                                    dataIndex: 'sn',
-                                    key: 'sn',
+                                    dataIndex: 'goods_sn',
+                                    key: 'goods_sn',
                                     align : 'center',
                                 },
-                                {
-                                    title: '商品总重量',
-                                    dataIndex: 'weight',
-                                    key: 'weight',
-                                    align : 'center',
-                                }, {
-                                    title: '发货数量',
-                                    dataIndex: 'quantity',
-                                    key: 'quantity',
-                                    align : 'center',
-                                }
+                                // {
+                                //     title: '商品总重量',
+                                //     dataIndex: 'weight',
+                                //     key: 'weight',
+                                //     align : 'center',
+                                // }, {
+                                //     title: '发货数量',
+                                //     dataIndex: 'quantity',
+                                //     key: 'quantity',
+                                //     align : 'center',
+                                // }
                           ]} 
-                          dataSource={[
-                              {
-                                name : '开胃小吃',
-                                price : 26,
-                                total : 1,
-                                sum : 12,
-                                sn : 341234,
-                                weight : '10kg',
-                                quantity : 32,
-                              }
-                          ]} 
+                        //   dataSource={[
+                        //       {
+                        //         name : '开胃小吃',
+                        //         price : 26,
+                        //         total : 1,
+                        //         sum : 12,
+                        //         sn : 341234,
+                        //         weight : '10kg',
+                        //         quantity : 32,
+                        //       }
+                        //   ]} 
+                        dataSource={ goodsInfo }
+
+
                         />
                     </TabPane>
 
@@ -330,7 +378,7 @@ export default function({ dispatch, form, data, visible, loading  }){
                                 />
                      </TabPane>
 
-
+                 {/* 暂时不支持订单记录
                     <TabPane tab="订单记录" key="5">
                            <Table 
                                className="order-info-table"
@@ -381,9 +429,11 @@ export default function({ dispatch, form, data, visible, loading  }){
                                 ]} 
                                 />
                     </TabPane>
+                     */}
                     <TabPane tab="订单备注" key="6">
                        <Divider orientation="left"> 备注内容 </Divider>
-                       <TextArea rows={5} />
+                       <TextArea className="orderInfo_textArea"  defaultValue={ note } rows={5}  />
+                       <Button onClick={ submitNote } style={{ marginTop : 10 }} type="primary"> 提交 </Button>
                     </TabPane>
             </Tabs>
          </Drawer>

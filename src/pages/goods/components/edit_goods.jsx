@@ -69,7 +69,7 @@ const { Option } = Select;
          if( loading ) return;
          form.validateFields((err, fieldsValue) => {
                if(err) return;
-                [ 'brand_id', 'goods_img', 'goods_sn', 'keywords', 'counter_price'].forEach( key => {
+                [ 'brand_id', 'goods_img', 'goods_sn', 'keywords', 'counter_price', 'market_price'].forEach( key => {
                      if( fieldsValue[key] == undefined ) delete  fieldsValue[key];
                 });
                 [ 'is_on_sale', 'is_recommend' ,'is_hot' ].forEach( key => {

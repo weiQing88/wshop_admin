@@ -8,6 +8,7 @@ export default {
     state : {
         editOrderVisible : false,
         orderInfoVisible : false,
+        bookingVisible : false,
         isEdited : false,
         page : 1,
         limit : 10,
@@ -93,7 +94,65 @@ export default {
            }else{
                 message.error( res.data.message )
            }
-       }
+       },
+
+      *editNote(action,{ put, select, call }){
+           let res = yield call( orderServices.edit, action.payload );
+           if( res.data.status_code == 200 ){
+               message.success('编辑成功')
+           }else{
+              message.error( res.data.message )
+           }
+      },
+
+     *detail(action,{ put, select, call }){
+           let res = yield call( orderServices.detail, action.payload);
+           if( res.data.status_code == 200 ){
+                   yield put({
+                        type : 'setState',
+                        payload : [
+                             { key : 'orderDetail', value :  res.data.data },
+                             { key : 'orderDetailVisible', value : true },
+                        ]
+                    });
+           }else{
+                message.error( res.data.message )
+           }
+     },
+
+     *booking(action, { put, select, call }){
+            let res = yield call( orderServices.booking, action.payload );
+            if( res.data.status_code == 200 ){
+                message.success('预约成功');
+                yield put({
+                    type : 'setState',
+                    payload : [
+                        { key : 'orderInfo', value : {} },
+                        { key : 'bookingVisible', value : false },
+                    ]
+                });
+                let query = util.getQuery(); 
+                    yield put({ type : 'fetOrder', payload : query });
+            }else{
+                message.error( res.data.message )
+            }
+        },
+
+      *bookingModal(action, { put, select, call }){
+           let res = yield call( orderServices.orderInfo, action.payload);
+             if( res.data.status_code == 200 ){
+                   yield put({
+                        type : 'setState',
+                        payload : [
+                             { key : 'orderInfo', value : res.data.data },
+                             { key : 'bookingVisible', value : true },
+                        ]
+                    });
+           }else{
+                message.error( res.data.message )
+           }
+      }
+       
     },
     subscriptions : {}
 
