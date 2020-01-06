@@ -28,13 +28,10 @@ npm run start:no-mock  or yarn start:no-mock
 ### 小程序截图
 
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/erereer132405.png)
-
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132441.png)
-
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132510.png)
 
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132525.png)
-
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132625.png)
 
 
