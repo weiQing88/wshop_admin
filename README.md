@@ -72,6 +72,9 @@ npm run start:no-mock  or yarn start:no-mock
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132525.png)
 ![小程序截图](https://github.com/weiQing88/wshop/blob/master/public/screenshots/20200106132625.png)
 
+### 服务端
+项目地址：https://github.com/weiQing88/wshop
+
 
 # 说明
 >  时间、精力有限，仅完成基础功能，更多功能后续完善， 仅于学习目的~。
