@@ -22,7 +22,6 @@ export default {
       setGoodsPromotion( p = {} ){
         return api.patch('api/admin/goods/promotion', p )
       },
-
       deleteGoods(  p = {}  ){
         return api.delete('api/admin/goods/delete', { params : p })
       },
@@ -57,5 +56,6 @@ export default {
       },
       filterAttr(  p = {}  ){
             return api.get('api/admin/goods/attrs/filter', { params : p })
-       }
+       },
+   
 }

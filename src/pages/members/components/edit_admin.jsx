@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form,  Input, Radio, message } from 'antd';
+import { Modal, Form,  Input, Select, message } from 'antd';
 import util from '@/util';
 const { TextArea } = Input;
+const { Option } = Select;
 
 const formItemLayout = {
     labelCol: {
@@ -16,20 +17,45 @@ const formItemLayout = {
 
 
 
-
 const EditAdmin = ( props ) => {
-    let { form, data, visible, dispatch, isEdited  } = props,
+    let { form, dispatch, isEdited, data, loading, roles  } = props,
          { getFieldDecorator } = form;
 
+    let [ visible, setVisible ] = useState( false );
+
+
     let handleOk = () => {
-           dispatch({ type : 'admin/toggle', payload : {  key : 'visible', visible : false, isEdited : false  } });
+        if( loading ) return;
+        form.validateFields((err, fieldsValue) => {
+            if(err) return;
+            dispatch({ type : 'admin/editAdmin', payload :fieldsValue })
+        })   
     }
+
+
     let handleCancel = () => {
-           dispatch({ type : 'admin/toggle', payload : {  key : 'visible', visible : false, isEdited : false  } });
+           dispatch({ 
+               type : 'admin/setState', 
+               payload : [
+                  { key : 'visible', value : false },   
+                  { key : 'isEdited', value : false },
+                  { key : 'initDataSource', value : {} },
+               ]
+        });
     }
 
+    useEffect(() =>{ 
+        if( props.visible && visible == false ){
+               console.log( ' EditAdmin 打开' )
+               setVisible( true );
+        }
+        if( props.visible == false && visible ){
+               console.log( ' EditAdmin 关闭' )
+               form.resetFields();
+               setVisible( false );
+        }
+    }, [ props.visible ]);
 
-    useEffect(() =>{}, []);
 
    return (
         <Modal
@@ -42,7 +68,7 @@ const EditAdmin = ( props ) => {
             okText={'确定'}
         >
         <Form {...formItemLayout}  >
-
+{/* 
             <Form.Item label="账号">
                 {getFieldDecorator('points', {
                     rules: [
@@ -66,12 +92,13 @@ const EditAdmin = ( props ) => {
                          } 
                     ],
                 })( <Input placeholder="字母数字或下划线6-20位" />)}
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label="手机号码">
-                {getFieldDecorator('points', {
+            <Form.Item label="手机号">
+                {getFieldDecorator('mobile', {
+                    initialValue : data.mobile,
                     rules: [
-                        { required: true, message: '请输入账号' },
+                        { required: true, message: '请输入手机号' },
                         {
                             validator :  (rule, value, callback) => {
                                  try{
@@ -89,13 +116,12 @@ const EditAdmin = ( props ) => {
                             }
                         }
                       ],
-                })( <Input placeholder="请输入账号" />)}
+                })( <Input placeholder="手机号" />)}
             </Form.Item>
 
             <Form.Item label="密码">
-                {getFieldDecorator('points', {
-                    rules: [{
-                         required: true, message: '请输入账号' },
+                {getFieldDecorator('password', {
+                    rules: [{  required: true, message: '请输入密码' },
                          {
                             validator : (rule, value, callback) => {
                                  try{
@@ -109,23 +135,42 @@ const EditAdmin = ( props ) => {
                                             }
                                      }
                                  }catch( error ){
-                                      console.error( error )
+                                      console.error( error );
+                                     callback()
                                  }
-                                 callback()
+                              
                             }
                          }
                     ],
                 })( <Input placeholder="请输入6到16位密码" />)}
             </Form.Item>
 
+
+            <Form.Item label="用户名">
+                {getFieldDecorator('username', {
+                    initialValue : data.username,
+                    rules: [{  required: true, message: '请输入用户名' } ],
+                })( <Input placeholder="用户名" />)}
+            </Form.Item>
+
+
+
+            <Form.Item label="邮箱">
+                {getFieldDecorator('email', {
+                     initialValue : data.email,
+                    rules: [  { required : true, type : 'email', message: '请输入合法邮箱' } ],
+                })( <Input placeholder="邮箱" />)}
+            </Form.Item>
+
             <Form.Item label="角色">
                 {getFieldDecorator('admin_role',{
+                 initialValue : data.admin_role,
                   rules: [{ required: true, message: '请选择角色' }],
-                })( 
-                  <Radio.Group >
-                      <Radio value={1}> 超级管理员 </Radio>
-                      <Radio value={2}> 普通管理员 </Radio>
-                    </Radio.Group>
+                })( <Select>
+                       {
+                          roles.map( item => ( <Option key={ item.id } value={ item.name }>{ item.name  }</Option>  ))
+                       }
+                    </Select>
                  )}
             </Form.Item>
 

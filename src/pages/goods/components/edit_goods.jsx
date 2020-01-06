@@ -1,6 +1,7 @@
 import { connect } from 'dva';
 import React, { useState, useEffect } from 'react';
 import { UploadPlusButton } from '@/components/widgets';
+import AttrSelector from '@/components/attrselector'
 import util from '@/util';
 import { Drawer, Form,InputNumber, Button, Col, Row, Input, Select, Switch, Upload, Icon } from 'antd';
 const { TextArea } = Input;
@@ -72,9 +73,16 @@ const { Option } = Select;
                 [ 'brand_id', 'goods_img', 'goods_sn', 'keywords', 'counter_price', 'market_price'].forEach( key => {
                      if( fieldsValue[key] == undefined ) delete  fieldsValue[key];
                 });
-                [ 'is_on_sale', 'is_recommend' ,'is_hot' ].forEach( key => {
-                      fieldsValue[key] =  fieldsValue[key] ? '1' : '0';
-                });
+                [ 'is_on_sale', 'is_recommend' ,'is_hot' ].forEach( key => {  fieldsValue[key] =  fieldsValue[key] ? '1' : '0'  });
+
+                 if( fieldsValue.category_attrs ){
+                         let cAttrs = [];
+                        for( let i = 0; i < fieldsValue.category_attrs.length; i++ ){
+                              cAttrs[i] = fieldsValue.category_attrs[i].attr_id;
+                        }
+                        fieldsValue.category_attrs = cAttrs.join(',');
+                  }
+
 
                 isEdited && (fieldsValue.goods_id = initData.goods_id);
 
@@ -114,18 +122,40 @@ const { Option } = Select;
     }
 
 
+
+   let setFile = changedValue => {
+       form.setFieldsValue({ category_attrs : changedValue });
+   }
+
+
+   getFieldDecorator('category_attrs', {  initialValue : initData.attrs });
+
+
     useEffect(() =>{ 
          if( props.visible && visible == false ){
                 console.log( ' edit_goods 打开' )
-               setVisible( true );
+               dispatch({  type : 'attrselector/fetAttrs',  payload : { page : 1, limit : 10 } });
+               isEdited && dispatch({
+                            type : 'attrselector/setState',
+                            payload : { key : 'selectedKeys', value : initData.category_attrs }
+                        });
+             setVisible( true );
+
          }
          if( props.visible == false && visible ){
                 console.log( ' edit_goods 关闭' )
+                dispatch({
+                       type  : 'attrselector/setState',
+                       payload : [ {  key : 'dataSource', value : [] }, {  key : 'selectedKeys', value : [] } ]
+                   });
                 form.resetFields();
                 setLen(0);
                 setVisible( false );
+
          }
      }, [ props.visible ]);
+
+
 
 
 
@@ -209,6 +239,10 @@ const { Option } = Select;
                     rules: [{ required: false, message: '请输入商品关键词' }],
                   })( <Input style={ formItemStyle } placeholder="多词用‘ ，’隔开" />)}
              </Form.Item>
+
+             <Form.Item label="关联属性">
+                 <AttrSelector onChange={ setFile } />
+              </Form.Item>
 
 
             <Row>

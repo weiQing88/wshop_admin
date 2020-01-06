@@ -117,20 +117,29 @@ const OrderList = ({
                 payload : [ {  key : 'editOrderVisible', value : true }, { key : 'orderInfo', value : data } ]
                });
           }else if( type == 'view' ){
-
-             //  console.log('data', data)
-
                dispatch({
                    type : 'orderList/detail',
                    payload : {  order_id : data.order_id, id : data.id }
                })
-
-
-              // 获取多个表单的信息
-            //  dispatch({ type : 'orderList/setState', payload : {  key : 'orderDetailVisible', value : true  } });
           }else if( type == 'booking' ){
-                dispatch({  type : 'orderList/bookingModal', payload : { order_id : data.order_id, id : data.id } })
-          }
+                if( data.pay_status == '2' ){
+                    dispatch({  type : 'orderList/bookingModal', payload : { order_id : data.order_id, id : data.id } })
+                }else{
+                    message.error('订单未支付，不可预约取件')
+                }
+              
+          }else if( type == "cancel" ){
+             let { logistic_code, shipper_code, order_id, id } =  data;
+                 dispatch({
+                     type : 'orderList/cancel',
+                     payload : { 
+                        id : data.id, 
+                        ShipperCode : shipper_code,
+                        OrderCode : order_id,
+                        LogisticCode : logistic_code
+                       }
+                 })
+          }else if( type == 'delete' ){}
 
     }
 
@@ -273,7 +282,7 @@ const OrderList = ({
                         render: (text, record) => (
                           <span className="table-action-buttons">
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'view', data: record }) } type="button"> 查看 </button>
-                              <Popconfirm title="已与购买方协商取消订单？" onConfirm={ handleTableCellEvent.bind(this, { type : 'cancel', data: record }) } okText="是" cancelText="否" >
+                                <Popconfirm title="已与购买方协商取消订单？" onConfirm={ handleTableCellEvent.bind(this, { type : 'delete', data: record }) } okText="是" cancelText="否" >
                                   <button type="button"> 取消 </button>
                                </Popconfirm>
                                {
@@ -281,10 +290,10 @@ const OrderList = ({
                                   ( <button onClick={ handleTableCellEvent.bind(this, { type : 'booking', data: record }) }  type="button"> 预约 </button>) 
                                   : null
                                }
-                               {
+                                 {
                                  record.shipping_status == '1' ? 
-                                    ( <button onClick={ handleTableCellEvent.bind(this, { type : 'rescission', data: record }) }  type="button"> 解约 </button>)
-                                    : null
+                                  ( <button onClick={ handleTableCellEvent.bind(this, { type : 'cancel', data: record }) }  type="button"> 解约 </button>) 
+                                  : null
                                }
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'edit', data: record }) }  type="button"> 编辑 </button>
                           </span>

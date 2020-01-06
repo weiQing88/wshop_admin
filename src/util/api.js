@@ -6,11 +6,11 @@ export default (function (params) {
 
   // node 服务
  // axios.defaults.baseURL = 'http://127.0.0.1:7001';
-
+ 
     // 带上请求头
    axios.defaults.headers.common['Authorization'] = `Bearer ${ util.getCookie('wshopLoginToken')}`;
 
-    // 请求拦截
+   // 请求拦截
    axios.interceptors.request.use(function(config) {
        return config
    }, function(error) {

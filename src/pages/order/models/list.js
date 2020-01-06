@@ -39,13 +39,15 @@ export default {
     },
     effects : {
         *fetOrder( action, { put, select, call }){
+
           let queryObject = util.deepCopy( action.payload );
               Object.keys( queryObject ).forEach( key => {  if( !util.isValid( queryObject[key] ) ) delete queryObject[key] });
              let res = yield call( orderServices.fetOrder, queryObject );
+
              if( res.data.status_code == 200 ){
-                  let { data, total } = res.data; 
                   let tabsItem = yield select( state => state.orderList.tabsItem );
                       tabsItem.forEach( item => { item.count = res.data[ item.type ] });
+
                   let payload =  [
                                 {  key : 'dataSource', value : res.data.data },
                                 {  key : 'total', value : res.data.total },
@@ -140,7 +142,7 @@ export default {
 
       *bookingModal(action, { put, select, call }){
            let res = yield call( orderServices.orderInfo, action.payload);
-             if( res.data.status_code == 200 ){
+              if( res.data.status_code == 200 ){
                    yield put({
                         type : 'setState',
                         payload : [
@@ -151,8 +153,19 @@ export default {
            }else{
                 message.error( res.data.message )
            }
+      },
+      *cancel(action, { put, select, call }){
+            let res = yield call( orderServices.cancel, action.payload );
+            if( res.data.status_code == 200 ){
+                message.error( '取消预定成功' )
+                let query = util.getQuery(); 
+                yield put({ type : 'fetOrder', payload : query });
+            }else{
+                message.error( res.data.message )
+            }
       }
-       
+
+
     },
     subscriptions : {}
 

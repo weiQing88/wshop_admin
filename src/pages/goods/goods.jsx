@@ -6,6 +6,8 @@ import { ToolbarTabs, TableSrollStatus } from '@/components/widgets';
 import GoodsEditForm from './components/edit_goods';
 import GoodsPromotion from './components/edit_goods_promotion';
 import BulkEditModal from './components/bulk_edit';
+
+
 import { Table, Switch, Popconfirm, message, Modal  } from 'antd';
 import util from '@/util';
 
@@ -65,6 +67,7 @@ import util from '@/util';
                               {  key : 'goodsFormInitialData', value :  record  }
                             ]
                       });
+
                    dispatch({   type : 'category/fetCategory'});
                 }else if( type == 'delete' ){
                   dispatch({
@@ -85,8 +88,10 @@ import util from '@/util';
                   }
                    
                 }else if( type == 'comment' ){ 
-                 // 留后期做
+                   // 留后期做
+
               }
+
     }
 
 
@@ -404,6 +409,8 @@ import util from '@/util';
                initData={ promotionInitialData }
              />
 
+
+    
          </AppLayout>    
       )
 }
@@ -411,14 +418,22 @@ import util from '@/util';
 
 
 function mapStateToProps(state) {
-  const { goodsEditFormVisible,goodsFormInitialData, 
-        promotionInitialData, promotionFormVisible, 
+  const { 
+        goodsEditFormVisible,
+        goodsFormInitialData, 
+        promotionInitialData,
+        promotionFormVisible, 
         searchFormVisible, 
         tabsItem,
         selectedRowKeys,
         bulkEditVisible,
         bulkEditType,
-        isEdited, dataSource, limit, total, page } = state.goods;
+        isEdited,
+       dataSource, 
+       limit, 
+       total,
+       page 
+      } = state.goods;
   const { dataSource : categoryDataSource } = state.category;
 
   return {

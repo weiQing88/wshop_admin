@@ -33,10 +33,10 @@ export default {
             state.total = payload.total;
             return state
         },
-        toggle( state, { payload } ){
-              state.visible = payload.visible;
-              state.isEdited = payload.isEdited;
-              state.formDataSource = payload.data || {};
+        close( state, { payload } ){
+              state.visible = false;
+              state.isEdited = false;
+              state.formDataSource =  {};
               return state;
          },
          

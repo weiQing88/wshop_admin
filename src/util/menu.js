@@ -7,21 +7,25 @@ const menuData = [
         name : '首页',
         icon : 'icon-shouye',
         path : '',
+        key : 'home',
       },
      {
         name : '商品管理',
         icon : 'icon-RectangleCopy',
         path : 'goods',
+        key : 'goods',
         children : [
              {
                 name : '商品列表',
                 path : '',
                 authority : 1,
+                key : 'goods-list',
              },
              {
               name : '商品分类',
               path : 'category',
               authority : 1,
+              key : 'goods-category',
              },
              {
                  name : '商品属性',

@@ -8,8 +8,7 @@ export default {
     state : {
          islogged : false,
          captchaSvg : '',
-         registerData : {}, 
-         loginData : {},
+         registerData : {},
     },
     reducers : {
          setState( state, { payload } ){
@@ -31,19 +30,13 @@ export default {
                    message.error( res.data.message );
                    return false;
               }
-                 yield put({ 
-                     type : 'setState', 
-                      payload : { 
-                          key : 'loginData',
-                          value :  res.data
-                      } 
-                    })
+                window.location.reload(); 
          },
 
         *logout( action, { put, call }){
             let res =  yield call( loginServices.logout, action.payload ); 
                if( res.data.status_code == 200 ){
-                    util.deleteCookies([ 'wshopLoginToken', 'userInfo' ])
+                    util.deleteCookies([ 'wshopLoginToken', 'userInfo' ]);
                     window.location.reload()
                }else{
                     message.error(  res.data.message )

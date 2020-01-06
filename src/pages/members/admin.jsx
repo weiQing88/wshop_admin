@@ -4,42 +4,79 @@ import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/app_layout';
 import EditAdmin from './components/edit_admin';
 
-import { Tabs, Card, Icon, Badge, Table, Divider, Button  } from 'antd';
+import { Tabs, Card, Icon, Popconfirm,Badge, Table, Divider, Button  } from 'antd';
 
-const data = [
-     {
-        id : 123,
-        account : 'admin1988@qq.com',
-        username : 'tester',
-        admin_role : '超级管理员',
-     }
-];
 
-const Admin = ({ dispatch, limit, visible, isEdited, visible2, loading,  total, page }) => {
+const Admin = ({ history, roles, dispatch, limit, visible, isEdited, loading, dataSource, initDataSource,  total, page }) => {
+
+
 
  
     let handleToolbarEvent = () => {}
 
-    let onTableChange = () => {}
 
-    let  onTableShowSizeChange = () => {}
+     // 分页处理函数
+     let onTableChange = (page, pageSize) => {
+      if( loading ) return;
+     let query = util.getQuery();
+        query.page = page;
+        query.limit = pageSize;
+        dispatch({ type : 'admin/fetAdmin', payload : query })
+     };
 
-    let showEditForm = () => {
-         dispatch({ type : 'admin/toggle', payload : {  key : 'visible', visible : true, isEdited : false  } });
+
+   // 分页页码处理函数
+    let onTableShowSizeChange = (current, size) => {
+         if( loading ) return;
+           let query = util.getQuery();
+                query.page = current;
+                query.limit = size;
+            dispatch({ type : 'admin/fetAdmin', payload : query })
+      };
+
+
+
+
+    let showEditForm = () => {   
+      if( roles.length == 0 )  dispatch({  type : 'admin/fetRoles'});
+       dispatch({ 
+            type : 'admin/setState', 
+            payload : [
+                {  key : 'visible', value : true },
+                {  key : 'isEdited', value : false },
+                {  key : 'initDataSource', value : {} }, 
+            ]
+        })
+     }
+
+
+    let handleTableCellEvent = ({ type, data }) => {
+            if( type == 'edit' ){
+              if( roles.length == 0 )  dispatch({  type : 'admin/fetRoles'})
+                  dispatch({ 
+                      type : 'admin/setState', 
+                      payload : [
+                        {  key : 'visible', value : true },
+                        {  key : 'isEdited', value : true },
+                        {  key : 'initDataSource', value : data } 
+                      ]
+                  })
+            }else if( type == 'delete' ){
+                 dispatch({ type : 'admin/deleteAdmin', payload : data.id  })
+            }
     }
 
 
-    let handleTableCellEvent = ( arg ) => {
-           switch( arg.type ){
-               case 'point' :  dispatch({ type : 'admin/setState', payload : {  key : 'visible', value : true  } });
-               break;
-               case 'edit' :  dispatch({ type : 'admin/toggle', payload : {   key : 'visible', visible : true, isEdited : true  } });
-               break;
-           }
-    }
+    useEffect(() =>{
+      // 清空参数
+    if( history.location.search ) history.push('/members/admin\/');
+     dispatch({ type : 'admin/fetAdmin' });
+     console.log(' admin 仅仅需要执行一次')
+
+  }, []);
 
 
-    useEffect(() =>{}, [  ]);
+
 
      return (
         <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
@@ -72,8 +109,8 @@ const Admin = ({ dispatch, limit, visible, isEdited, visible2, loading,  total, 
                      [
                       {
                         title: '账号',
-                        dataIndex: 'account',
-                        key: 'account',
+                        dataIndex: 'mobile',
+                        key: 'mobile',
                         align : 'center',
                       },
                       {
@@ -96,13 +133,15 @@ const Admin = ({ dispatch, limit, visible, isEdited, visible2, loading,  total, 
                         render: (text, record) => (
                           <span className="table-action-buttons">
                               <button onClick={ handleTableCellEvent.bind(this, { type : 'edit', data: record }) }  type="button"> 编辑 </button>
-                              <button onClick={ handleTableCellEvent.bind(this, { type : 'delete', data: record }) }  type="button"> 删除 </button>
+                              <Popconfirm title="确定删除？" onConfirm={  handleTableCellEvent.bind(this, { type : 'delete', data: record })  } okText="是" cancelText="否" >
+                                  <button  type="button"> 删除 </button>
+                               </Popconfirm>
                           </span>
                         ),
                       },
                   
                   ]} 
-                 dataSource={ data }
+                 dataSource={ dataSource }
                  rowKey="id"
              />
 
@@ -110,6 +149,9 @@ const Admin = ({ dispatch, limit, visible, isEdited, visible2, loading,  total, 
                   isEdited={ isEdited }
                   visible={ visible }
                   dispatch={ dispatch }
+                  data={ initDataSource }
+                  loading={ loading }
+                  roles={ roles }
                />
 
 
@@ -119,10 +161,13 @@ const Admin = ({ dispatch, limit, visible, isEdited, visible2, loading,  total, 
 
 
 function mapStateToProps(state) {
-    const {  visible, isEdited, limit, total, page } = state.admin;
+    const {  visible, isEdited, limit, total, page,roles, dataSource, initDataSource } = state.admin;
     return {
           visible,
           isEdited,
+          dataSource, 
+          initDataSource,
+          roles,
           page,
           limit,
           total,

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Layout, Menu, Icon  } from 'antd';
 import pathToRegexp from 'path-to-regexp';
-import { getMenuData } from '@/util/menu';
 import Link from 'umi/link';
 import util from '@/util';
 import { IconFont }  from '@/components/widgets';
@@ -14,9 +13,6 @@ export default ( props ) => {
 
        let { location, collapsed } = props;
 
-       let menuData = getMenuData();
-
-
        let getDefaultOpenKeys = () => {
          let path = location.pathname;
           if( path == '/' ){
@@ -27,6 +23,9 @@ export default ( props ) => {
      }
 
       let [ openKeys, setOpenKeys ] = useState( getDefaultOpenKeys() ); 
+
+
+      let [ menuDataSource, setMenuDataSource ] = useState([]);
 
    
 
@@ -91,12 +90,8 @@ export default ( props ) => {
 
 
       let  getSubMenuOrItem = item => {
-
          if ( item.children && item.children.some( child => child.name ) ) {
-
            const childrenItems = getNavMenuItems(item.children);
-
-         
                // 当无子菜单时就不展示菜单
                if ( childrenItems && childrenItems.length > 0) {
                   return (
@@ -135,15 +130,16 @@ export default ( props ) => {
             setOpenKeys( openKeys )
      }
 
-   
 
-      useEffect(() => {}, [])
+      useEffect(() => {
+            if( JSON.stringify( props.data ) != JSON.stringify( menuDataSource ) ){
+                   setMenuDataSource(  props.data )
+            }
+      }, [ props.data ]);
 
        return (
         <Sider trigger={null} collapsible collapsed={ collapsed }>
-
         <div id="app-logo"> WSHOP 商城 </div>
- 
          <Menu  
              mode="inline" 
              theme="dark" 
@@ -151,11 +147,9 @@ export default ( props ) => {
              onOpenChange={ handleOpenChange }
              openKeys={ openKeys } 
              defaultSelectedKeys={[ location.pathname ]}>
-
             {
-              getNavMenuItems( menuData )
+              getNavMenuItems( menuDataSource )
             }
-       
          </Menu>
        </Sider>
        )

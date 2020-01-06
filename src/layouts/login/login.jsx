@@ -9,7 +9,7 @@ import util from '@/util';
 
 
 const Login = props => {
-       let {  dispatch, form, captchaSvg, loginData,loading } = props;
+       let {  dispatch, form, captchaSvg,loading } = props;
        let { getFieldDecorator } = form;
 
        // 更换验证码
@@ -35,29 +35,14 @@ const Login = props => {
 
 
        useEffect(() => {
-             // 获取验证码
-            if( JSON.stringify( loginData ) == '{}' ) dispatch({ type : 'login/captcha' });
-            if( loginData.status_code == 200 ){
-                    form.resetFields();
-                    // cdCallback();  倒计时依旧保持，不重置。
-                    dispatch({
-                        type : 'login/setState',
-                            payload : {
-                            key : 'loginData',
-                            value : {}
-                        }
-                    })
-            }
-         if( loginData.status_code && loginData.status_code != 200 ){
-                message.error( loginData.message );
-         } 
-          console.log('login 仅仅执行一次');
-       }, [loginData]);
+            // 获取验证码
+            dispatch({ type : 'login/captcha' });
+             console.log('login 仅仅执行一次');
+       }, []);
 
-       if( util.getCookie('wshopLoginToken') && util.getCookie('userInfo') ){ // 如果已经登录，跳转首页 
-                     return ( <Redirect to="/" /> )
+       if( util.getCookie('wshopLoginToken') && util.getCookie('userInfo') ){ // 如果已经登录，跳转首页
+                    return ( <Redirect to="/" /> )
                  }else{
-        
                     return (
                         <div className="app-login-wrapper">
                         <Form className="app-login-form">
@@ -111,10 +96,9 @@ const Login = props => {
 
 
 function mapStateToProps(state) {
-    const { islogin, captchaSvg, loginData } = state.login;
+    const { islogin, captchaSvg } = state.login;
     return {
           islogin,
-          loginData,
           captchaSvg,
           loading: state.loading.models.login,
      };

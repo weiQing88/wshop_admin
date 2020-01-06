@@ -30,7 +30,6 @@ const Toolbar = function( props ){
             delete  values.range_time;
          let bool = props.onClick({ type, visible : true, data : values  }); 
              bool && form.resetFields(); // true ==> 清空选项框
-
       }
 
 

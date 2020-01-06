@@ -520,6 +520,21 @@ deepCopyArray( arr ){
     return res
   }
 
+  getUserInfo(){
+    if( window.USERINFO ){
+       return window.USERINFO
+    }else{
+      let userInfo = this.getCookie('userInfo');
+      if( userInfo ){
+          userInfo = JSON.parse( userInfo );
+          userInfo.admin_role = decodeURIComponent( userInfo.admin_role || '' );
+          window.USERINFO = userInfo;
+          return userInfo
+      }
+      return false
+    }
+  }
+
 
 
 }

@@ -11,12 +11,12 @@ import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, Popconfirm } 
     const onTableCellEvent = ( arg ) => {
             if( arg.type == 'edit'){
                   dispatch({
-                    type : 'category/toggle',
-                     payload : {
-                        visible : true,
-                        isEdited : true,
-                        data : arg.data,
-                    }
+                    type : 'category/setState',
+                     payload : [
+                        { key : 'visible', value : true },
+                        { key : 'isEdited', value : true },
+                        { key : 'formDataSource', value : arg.data },
+                     ]
                   })
             }else if( arg.type == 'delet' ){
                   dispatch({
@@ -37,11 +37,12 @@ import {  Button, Switch, Tabs, Card, Icon, Badge, Table, Divider, Popconfirm } 
     
     const showEditForm = () => {
           dispatch({
-              type : 'category/toggle',
-              payload : {
-                  visible : true,
-                  isEdited : false,
-              }
+            type : 'category/setState',
+            payload : [
+                { key : 'visible', value : true },
+                { key : 'isEdited', value : false },
+                { key : 'formDataSource', value : {} },
+            ]
           })
     }
 

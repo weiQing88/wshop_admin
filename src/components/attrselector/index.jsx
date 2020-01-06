@@ -98,6 +98,7 @@ class AttrSelector extends Component {
 
       render(){
            let { page = 1, total = 0, loading, dataSource = [], selectedKeys = []  } = this.props;
+
             return (
                 <div className="attr-selector-wrapper clearFloat">
                 <Spin spinning={ loading } className="clearFloat">
@@ -148,7 +149,7 @@ class AttrSelector extends Component {
 
 
 function mapStateToProps(state) {
-    const {limit, total, page, selectedKeys, dataSource } = state.attrselector;
+    const {limit, total, page, selectedKeys = [], dataSource } = state.attrselector;
      return {
            page,
            limit,

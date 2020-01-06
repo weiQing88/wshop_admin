@@ -10,11 +10,19 @@ export default {
       path : '/register',
       component : '../layouts/login/register',
     },
-    
+
+
     {
       path: '/',
       component: '../layouts/index',
       routes: [
+
+        {
+          path : '/user',
+          component: '../pages/member_center/index',
+        },
+        
+
         {
           path : '/testpage',
           component: '../pages/testpage',

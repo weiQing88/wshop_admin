@@ -1,4 +1,5 @@
 // import styles from './index.css';
+import router from 'umi/router';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Layout, Icon,Row, Col, Dropdown, Menu, Avatar  } from 'antd';
@@ -7,11 +8,12 @@ import Breadcrumbs from '@/components/breadcrumbs';
 import util from '@/util';
 const { Header, Content } = Layout;
 
+
 function App(props) {
 
-      let { location, dispatch } = props;
+      let { location, dispatch, menu } = props;
       let [ collapsed, setCollapsed ] = useState( false );
-      let [ user, setUser ] = useState({  });
+      let [ user, setUser ] = useState({});
 
       let defaultAvater = require('../assets/images/avater.png');
       let toggle = () => {
@@ -26,9 +28,10 @@ function App(props) {
               switch( key ){
                 case 'logout': handleLogout();
                 break;
+                case 'user' : router.push('/user') ;
+                break;
               }
       }
-
 
      // 退出登录
     let handleLogout = () => {
@@ -43,13 +46,26 @@ function App(props) {
 
 
     useEffect(() => {
-       let userInfo = util.getCookie('userInfo');
-         if( userInfo ) setUser( JSON.parse( userInfo ) );
+                let  userinfo = util.getUserInfo();
+                if( userinfo ){
+                      setUser( userinfo );
+                    // 获取侧边导航数据
+                    dispatch({
+                      type : 'home/fetMenu',
+                      payload : { name :  userinfo.admin_role }
+                    })
+                }
+
     }, [])
+
 
   return (
     <Layout style={{ height : '100%' }} >
-      <SiderMenu location={ location } collapsed={ collapsed }  />
+      <SiderMenu 
+         data={ menu }
+         location={ location } 
+         dispatch={ dispatch } 
+         collapsed={ collapsed }  />
       <Layout>
         <Header style={{ background: '#fff', padding: 0 }}>
           <Row>
@@ -66,7 +82,7 @@ function App(props) {
                     <figure id="user-info-block">
                         <Avatar size={ 25 } shape="square" src={ user.avatar || defaultAvater } />
                            <Dropdown overlay={<Menu  onClick={ handleMenuEvent } >
-                                            <Menu.Item key="1">
+                                            <Menu.Item key="user">
                                               <span > 个人中心 </span>
                                             </Menu.Item>
                                             <Menu.Divider />
@@ -95,9 +111,10 @@ function App(props) {
 
 
 function mapStateToProps(state) {
-  const { islogin } = state.login;
+  const { menu } = state.home;
   return {
-        loading: state.loading.models.login,
+        menu,
+        loading: state.loading.models.home,
    };
 
 }

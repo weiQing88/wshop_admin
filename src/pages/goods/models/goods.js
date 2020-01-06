@@ -179,8 +179,6 @@ import router from 'umi/router';
                             message.error( res.data.message )
                         }   
              }
-
-
             
         },
         subscriptions : {

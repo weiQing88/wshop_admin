@@ -3,69 +3,74 @@ import React, { useState, useEffect } from 'react';
 
 import AppLayout from '@/components/app_layout';
 import EditRole from './components/edit_role';
-import EditAuth from './components/edit_auth';
 
 
-import { Icon, Button, Table, Divider, Modal  } from 'antd';
-
-const data = [
-     {
-        id : 123,
-        name: '超级管理员',
-        add_time : '2019-01-01:14:41:55'
-     },
-     {
-        id : 321,
-        name: '普通管理员',
-        add_time : '2019-01-01:14:41:55'
-     }
-];
+import { Icon, Button, Table, Divider, Modal, Popconfirm  } from 'antd';
 
 
-
-
-const Roles = ({ dispatch, limit, visible, visible2, loading,  total, page }) => {
+const Roles = ({ dispatch, limit, visible, loading, isEdited, total, page, dataSource, initDataSource }) => {
 
  
     let handleToolbarEvent = () => {}
 
-    let onTableChange = () => {}
+      // 分页处理函数
+      let onTableChange = (page, pageSize) => {
+        if( loading ) return;
+       let query = util.getQuery();
+          query.page = page;
+          query.limit = pageSize;
+          dispatch({ type : 'roles/fetRoles', payload : query })
+       };
+  
+  
+     // 分页页码处理函数
+      let onTableShowSizeChange = (current, size) => {
+           if( loading ) return;
+             let query = util.getQuery();
+                  query.page = current;
+                  query.limit = size;
+              dispatch({ type : 'roles/fetRoles', payload : query })
+        };
+    
 
-    let  onTableShowSizeChange = () => {}
-
-
-    let handleTableCellEvent = ( arg ) => {
-           switch( arg.type ){
-               case 'auth' :  dispatch({ type : 'roles/setState', payload : {  key : 'visible2', value : true  } });
+    let handleTableCellEvent = ({ type, data }) => {
+          let payload = [ {  key : 'isEdited', value : true  },{  key : 'initDataSource', value : data  } ];
+           switch( type ){
+               case 'edit' : payload.push( {  key : 'visible', value : true  }) ;
                break;
-            //    case 'edit' :  dispatch({ type : 'roles/setState', payload : {  key : 'visible2', value : true  } });
-            //    break;
            }
+          dispatch({  type :  'roles/setState',payload });
     }
 
 
+   
     let showEditForm = () => {
-        dispatch({ type : 'roles/setState', payload : {  key : 'visible', value : true  } });
+        dispatch({ 
+               type : 'roles/setState',
+                payload : [
+                     {  key : 'visible', value : true  },
+                     {  key : 'initDataSource', value : {}  },
+                     {  key : 'isEdited', value : false  },
+                ]
+      
+          });
     }
 
 
-    useEffect(() =>{}, [  ]);
+    useEffect(() =>{
+        dispatch({ type : 'roles/fetRoles'})
+    }, []);
+
+
 
      return (
         <AppLayout style={{ backgroundColor : '#f0f2f5'}} >
               <div className="members-toolbar"> 
                  <Button  onClick={ showEditForm } style={{ margin : '15px 0 0 10px' }} type="primary"> 添加 </Button>
                </div>
-         
-
             <Table  
                  bordered 
                  style={{  backgroundColor : '#fff' }}
-                 scroll={{ 
-                     //  x : '100%',
-                     // y :  tHeight,
-                     // scrollToFirstRowOnChange : true,
-                    }}
                  pagination={{
                   pageSizeOptions: ['10','20', '30', '50'],
                   current: Number(page), 
@@ -81,7 +86,6 @@ const Roles = ({ dispatch, limit, visible, visible2, loading,  total, page }) =>
                   }} 
                  columns={
                      [
-
                       {
                         title: '角色名称',
                         dataIndex: 'name',
@@ -90,38 +94,36 @@ const Roles = ({ dispatch, limit, visible, visible2, loading,  total, page }) =>
                       },
                       {
                         title: '创建时间',
-                        dataIndex: 'add_time',
-                        key: 'add_time',
+                        dataIndex: 'createdAt',
+                        key: 'createdAt',
                         align : 'center',
                       },
-
-                    
                       {
                         title: '操作 ',
                         key: 'action',
                         align : 'center',
                         render: (text, record) => (
                           <span className="table-action-buttons">
-                              <button onClick={ handleTableCellEvent.bind(this, { type : 'auth', data: record }) }  type="button"> 权限 </button>
-                              <button onClick={ handleTableCellEvent.bind(this, { type : 'delete', data: record }) }  type="button"> 删除 </button>
+                              <button onClick={ handleTableCellEvent.bind(this, { type : 'edit', data: record }) }  type="button"> 编辑 </button>
+                              <Popconfirm title="确定删除？" onConfirm={ handleTableCellEvent.bind(this, { type : 'delete', data: record })  } okText="是" cancelText="否" >
+                                  <button  type="button"> 删除 </button>
+                             </Popconfirm>
                           </span>
                         ),
                       },
                   
                   ]} 
-                 dataSource={ data }
+                 dataSource={ dataSource }
                  rowKey="id"
              />
 
         <EditRole
             visible={ visible }
             dispatch={ dispatch }
+            loading={ loading }
+            isEdited={ isEdited }
+            data={ initDataSource }
            />
-
-           <EditAuth
-                visible={ visible2 }
-                 dispatch={ dispatch }
-             />
 
         </AppLayout>
        )
@@ -129,10 +131,12 @@ const Roles = ({ dispatch, limit, visible, visible2, loading,  total, page }) =>
 
 
 function mapStateToProps(state) {
-    const {  visible, visible2, limit, total, page } = state.roles;
+    const {  visible, limit, total,isEdited, page, dataSource, initDataSource } = state.roles;
     return {
           visible,
-          visible2,
+          dataSource, 
+          initDataSource,
+          isEdited,
           page,
           limit,
           total,
