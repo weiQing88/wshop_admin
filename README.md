@@ -17,6 +17,24 @@ npm run start:no-mock  or yarn start:no-mock
 
 ```
 
+### 项目结构
+```
+├─.umirc.js                
+├─ wx 小程序文件　
+├─src
+│  ├─assets
+│  │  └─images
+│  ├─components
+│  ├─layouts
+│  ├─models
+│  ├─pages
+│  ├─services
+│  └─util
+│ 
+└─mock
+```
+
+
 ## 小程序功能
 - [x] 首页
 - [x] 搜索
