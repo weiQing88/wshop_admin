@@ -111,6 +111,12 @@ class Util {
     return value ? value[1] : "";
   }
 
+   /**
+    * 
+    * @param {*} key  
+    * @param {*} val 
+    * @param {*} time  以天为单位
+    */
   setCookie(key, val, time = undefined ) {
     /* demo： Util.setCookie("remark","damn it",24) */
     let date = new Date();
@@ -124,6 +130,9 @@ class Util {
      }
   }
 
+   /**
+    * @param { Array } [ { key , val, time  } ] 
+    */
   setCookies(){
        if( arguments.length == 1 && Array.isArray( arguments[0] ) ){
              arguments[0].forEach( arg => {
@@ -151,13 +160,13 @@ class Util {
   }
 
   deleteCookie(key) {
-    let date = new Date();
-        date.setTime(date.getTime() - 10000); //将date设置为过去的时间
-        document.cookie = key + "=v; expires =" + date.toGMTString();
+      //将date设置为过去的时间
+       document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+       document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
   }
 
   deleteCookies = ( keys ) => {
-     if( keys instanceof Array )  keys.forEach( key => this.deleteCookie( key ) );
+     if( Array.isArray( keys ) )  keys.forEach( key => this.deleteCookie( key ) );
   }
 
 

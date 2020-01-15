@@ -131,6 +131,9 @@ export default {
 
   },
 
+  history: 'hash',
+
+  publicPath : '/public/admin/',
 
   proxy : [
       {

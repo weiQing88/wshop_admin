@@ -54,6 +54,7 @@ import router from 'umi/router';
                    Object.keys( queryObject ).forEach( key => {  if( !util.isValid( queryObject[key] ) ) delete queryObject[key] });
                  let res = yield call( services.fetGoods,  queryObject);
                   if( res.data.status_code == 200 ){
+                    let query = util.getQuery(); 
                     let tabsItem = yield select( state => state.goods.tabsItem );
                         tabsItem.forEach( item => { item.count = res.data[ item.type ] });
                     let payload =  [
@@ -62,8 +63,7 @@ import router from 'umi/router';
                                 { key : 'tabsItem',  value : tabsItem }
                             ];
                       if( action.payload ){
-                          let { page, limit } = action.payload;
-                          let query = util.getQuery(); 
+                          let { page, limit} = action.payload;
                                page && payload.push({ key : 'page', value : page });
                                limit &&  payload.push({ key : 'limit', value : limit });
                                 // 重置地址栏
@@ -80,6 +80,7 @@ import router from 'umi/router';
                             payload.push({key : 'page', value : 1 });
                             payload.push({key : 'limit', value : limit });
                             router.push({ pathname : '/goods/' }); // 重置地址栏
+
                       }
 
                       yield put({ type : 'setState', payload });
@@ -90,6 +91,7 @@ import router from 'umi/router';
 
 
             *editGoods( action, { put, select, call }){
+
                  let isEdited = yield select( state => state.goods.isEdited );
                  let res = null;
                  if( isEdited ){
@@ -98,20 +100,30 @@ import router from 'umi/router';
                       res = yield call( services.createGoods, action.payload );
                  }
 
-                 if( res.data.status_code == 200 ){
-                      message.success( isEdited ? '编辑成功' : '创建成功' );
-                     yield put({
-                          type : 'setState',
-                          payload : [
-                                {  key : 'goodsEditFormVisible', value : false  },
-                                {  key : 'isEdited', value : false },
-                                {  key : 'goodsFormInitialData', value : {} }
-                          ]
-                     })
-                    yield put({ type : 'fetGoodsData'})
-                 }else{
-                      message.error( res.data.message )
+                 try{
+
+                    if( res.data.status_code == 200 ){
+                        message.success( isEdited ? '编辑成功' : '创建成功' );
+                       yield put({
+                            type : 'setState',
+                            payload : [
+                                  {  key : 'goodsEditFormVisible', value : false  },
+                                  {  key : 'isEdited', value : false },
+                                  {  key : 'goodsFormInitialData', value : {} }
+                            ]
+                       });
+                       let query = util.getQuery();
+                           util.isValid( query ) ? '' : query = undefined;
+                       yield put({ type : 'fetGoodsData', payload : query  })
+                   }else{
+                        message.error( res.data.message )
+                   }
+
+                 }catch( er ){
+                    console.log('___er', er );
                  }
+
+               
             },
 
 
@@ -119,7 +131,9 @@ import router from 'umi/router';
                  let res = yield call( services.editGoodsStatus, action.payload );
                  if( res.data.status_code == 200 ){
                        message.success('编辑成功' );
-                    yield put({ type : 'fetGoodsData'})
+                       let query = util.getQuery();
+                           util.isValid( query ) ? '' : query = undefined;
+                       yield put({ type : 'fetGoodsData', payload : query  })
                  }else{
                     message.error( res.data.message )
                  }   
@@ -136,7 +150,10 @@ import router from 'umi/router';
                                 { key : 'promotionInitialData', value : {} },
                             ]
                         })
-                        yield put({ type : 'fetGoodsData'})
+
+                        let query = util.getQuery();
+                            util.isValid( query ) ? '' : query = undefined;
+                           yield put({ type : 'fetGoodsData', payload : query  })
                     }else{
                         message.error( res.data.message )
                     }   
@@ -146,7 +163,9 @@ import router from 'umi/router';
                 let res = yield call( services.deleteGoods, action.payload );
                 if( res.data.status_code == 200 ){
                     message.success( res.data.message );
-                    yield put({ type : 'fetGoodsData'})
+                    let query = util.getQuery();
+                    util.isValid( query ) ? '' : query = undefined;
+                    yield put({ type : 'fetGoodsData', payload : query  })
                }else{
                    message.error( res.data.message )
                }   
@@ -173,8 +192,9 @@ import router from 'umi/router';
                                 }
                              ]
                         });
-                         let query = util.getQuery(); 
-                             yield put({ type : 'fetGoodsData', payload : query });
+                        let query = util.getQuery();
+                            util.isValid( query ) ? '' : query = undefined;
+                            yield put({ type : 'fetGoodsData', payload : query  })
                         }else{
                             message.error( res.data.message )
                         }   

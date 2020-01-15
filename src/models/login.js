@@ -25,19 +25,24 @@ export default {
     },
     effects : {
         *login( action, { put, call } ){
-            let res =  yield call( loginServices.login, action.payload );  
-              if( res.data.status_code != 200 ){
-                   message.error( res.data.message );
-                   return false;
+             let res =  yield call( loginServices.login, action.payload ),
+                 { token, status_code, userinfo, expired }  = res.data || {};
+              if( status_code == 200 ){
+                     util.setCookie('wshopLoginToken', token, expired);
+                     util.setCookie('userInfo', JSON.stringify( userinfo ), expired);
+                     window.location.reload(); 
+              }else{
+                  message.error( res.data.message );
               }
-                window.location.reload(); 
          },
 
         *logout( action, { put, call }){
             let res =  yield call( loginServices.logout, action.payload ); 
                if( res.data.status_code == 200 ){
                     util.deleteCookies([ 'wshopLoginToken', 'userInfo' ]);
-                    window.location.reload()
+                    setTimeout(() =>{
+                         window.location.reload()
+                    })
                }else{
                     message.error(  res.data.message )
                }

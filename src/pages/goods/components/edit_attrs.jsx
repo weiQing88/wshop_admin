@@ -14,13 +14,15 @@ const EditAttrs = function( props ){
         const handleOk = () => {
             form.validateFields((err, fieldsValue) => {
                 if(err) return;
-                    let param = {
-                        attr_value : [],
+                 let param = {  
+                        attr_value :[], 
                         attr_name : fieldsValue.attr_name
-                    };
+                     };
                      Object.keys( fieldsValue ).forEach( key =>{
-                           if( key != 'attr_name' ) param.attr_value.push( fieldsValue[key] );
+                           if( key != 'attr_name')  param.attr_value.push( fieldsValue[key]  )
+                          
                      });
+      
                     if( isEdited ) param.attr_id = data.attr_id;
                     dispatch({
                         type : 'attrs/editAttr',
