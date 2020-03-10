@@ -54,7 +54,7 @@ npm run start:no-mock  or yarn start:no-mock
 - [x] 微信管理
 - [x] 会员管理
 - [ ] 操作日志
-- [ ] 物流查询
+- [x] 物流查询
 
 
 
